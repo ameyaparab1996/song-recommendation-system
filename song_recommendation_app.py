@@ -84,6 +84,8 @@ positive_prompt = st.sidebar.text_input('How do you want your songs to be?', 'So
 negative_prompt = st.sidebar.text_input('Movie title', 'Breakup because of distance')
 if st.sidebar.button("Generate Playlist", type="primary"):
     data_frame_demo()
+else:
+    intro()
 #demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
 #page_names_to_funcs[demo_name]()
     
