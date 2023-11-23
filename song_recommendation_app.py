@@ -5,7 +5,8 @@ def intro():
 
     st.write("# Personalized Spotify Song Recommender")
     st.sidebar.success("Write a prompt to generate recommendations")
-
+    
+    st.divider()
     st.markdown(
         """
         _“Music, once admitted to the soul, becomes a sort of spirit, and never dies.”_ — Edward Bulwer Lytton
@@ -79,5 +80,10 @@ page_names_to_funcs = {
     "DataFrame Demo": data_frame_demo
 }
 
-demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
-page_names_to_funcs[demo_name]()
+positive_prompt = st.text_input('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
+negative_prompt = st.text_input('Movie title', 'Breakup because of distance')
+if st.sidebar.button("Generate Playlist", type="primary"):
+    data_frame_demo()
+#demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
+#page_names_to_funcs[demo_name]()
+    
