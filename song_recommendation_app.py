@@ -115,7 +115,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                         'album_image': track['album']['images'][0]['url'],
                         'preview_url': track['preview_url'],
                         'track_uri': track['uri']}
-        spotify_df = spotify_df.append(spotify_data, ignore_index = True)
+        spotify_df = pd.concat(spotify_df,pd.DataFrame([spotify_data]))
       elif len(results['tracks']['items']) == 0:
         results_new = sp.search(q=f'track:{track_name}', type='track', limit=1)
         if len(results_new['tracks']['items']) > 0 and re.sub(r'[^a-zA-Z0-9\s]', '', results_new['tracks']['items'][0]['name'].lower()) == re.sub(r'[^a-zA-Z0-9\s]', '', recommendations_df.iloc[i,1].lower()):
