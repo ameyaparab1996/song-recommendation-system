@@ -48,7 +48,7 @@ def authenticate_spotify():
                                                client_secret=secret,
                                                redirect_uri='http://localhost',
                                                scope='playlist-modify-public',
-                                               open_browser=False))
+                                               open_browser=True))
 
 
 def get_recommendations(songs_df, similar_doc):
