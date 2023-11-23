@@ -142,6 +142,15 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         
     my_bar.empty()
 
+    st.markdown("""
+        <style>
+            .stDataEditor tr {
+                height: 50px;
+            }
+        </style>
+        """, 
+        unsafe_allow_html=True)
+    
     st.data_editor(spotify_df[['album_image','track_name','artists']][:n], 
                     column_config={
                         "album_image": st.column_config.ImageColumn(
