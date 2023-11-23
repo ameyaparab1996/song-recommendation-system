@@ -7,6 +7,7 @@ import gensim
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 from spotipy.oauth2 import SpotifyOAuth
+from spotipy.oauth2 import SpotifyClientCredentials
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -44,11 +45,8 @@ def authenticate_spotify():
     
     cid = '551b554ed7e14fafa21c5118bbba81fe'
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-    return spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=cid,
-                                               client_secret=secret,
-                                               redirect_uri='http://localhost',
-                                               scope='playlist-modify-public',
-                                               open_browser=False))
+    client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
+    return spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 
 
 def get_recommendations(songs_df, similar_doc):
@@ -97,7 +95,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
     similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
 
-    sampled_df = pd.read_csv("https://drive.google.com/file/d/1uUQLH3IHQ6eN127jEzEKGUQQL6X1ZGcU/view?usp=sharing")
+    sampled_df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
     recommendations_df = get_recommendations(sampled_df, similar_doc)
 
     sp = authenticate_spotify()
@@ -117,7 +115,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                         'album_image': track['album']['images'][0]['url'],
                         'preview_url': track['preview_url'],
                         'track_uri': track['uri']}
-        spotify_df = spotify_df.append(spotify_data, ignore_index = True)
+        spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
       elif len(results['tracks']['items']) == 0:
         results_new = sp.search(q=f'track:{track_name}', type='track', limit=1)
         if len(results_new['tracks']['items']) > 0 and re.sub(r'[^a-zA-Z0-9\s]', '', results_new['tracks']['items'][0]['name'].lower()) == re.sub(r'[^a-zA-Z0-9\s]', '', recommendations_df.iloc[i,1].lower()):
@@ -129,7 +127,8 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                           'album_image': track['album']['images'][0]['url'],
                           'preview_url': track['preview_url'],
                           'track_uri': track['uri']}
-          spotify_df = spotify_df.append(spotify_data, ignore_index = True)
+          spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
+            #spotify_df = spotify_df.append(spotify_data, ignore_index = True)
         else:
           print(f"No track found with the name '{track_name}'")
       else:
