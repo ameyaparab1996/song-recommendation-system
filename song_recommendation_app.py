@@ -147,11 +147,14 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                         "album_image": st.column_config.ImageColumn(
                             "Album Cover"
                         ),
+                        "track_name": "Track Name",
+                        "artists": "Artists",
                         "track_id": None,
                         "album_name": None,
                         "preview_url": None
                     },
-                   hide_index=True, 
+                   hide_index=True,
+                   use_container_width=True,
                    disabled= True)
 
 st.sidebar.success("Write a prompt to generate recommendations")
