@@ -134,26 +134,17 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
       else:
         print(f"No track found with the name '{track_name}'")
 
-    st.data_editor(spotify_df[:n], disabled= True)
-    
-def data_frame_demo():
-    import streamlit as st
-    import pandas as pd
-    import altair as alt
-
-    st.markdown(f"# {list(page_names_to_funcs.keys())[1]}")
-    st.write(
-        """
-        This demo shows how to use `st.write` to visualize Pandas DataFrames.
-
-(Data courtesy of the [UN Data Explorer](http://data.un.org/Explorer.aspx).)
-"""
-    )
-
-page_names_to_funcs = {
-    "—": intro,
-    "DataFrame Demo": data_frame_demo
-}
+    st.data_editor(spotify_df[['album_image','track_name','artists']][:n], 
+                    column_config={
+                        "album_image": st.column_config.ImageColumn(
+                            "Album Cover"
+                        ),
+                        "track_id": None,
+                        "album_name": None,
+                        "preview_url": None
+                    },
+                   hide_index=True, 
+                   disabled= True)
 
 st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
