@@ -46,7 +46,7 @@ def authenticate_spotify():
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
     return spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=cid,
                                                client_secret=secret,
-                                               redirect_uri='http://localhost',
+                                               redirect_uri='http://localhost:8080',
                                                scope='playlist-modify-public',
                                                open_browser=True))
 
