@@ -80,8 +80,8 @@ page_names_to_funcs = {
     "DataFrame Demo": data_frame_demo
 }
 
-positive_prompt = st.text_input('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
-negative_prompt = st.text_input('Movie title', 'Breakup because of distance')
+positive_prompt = st.sidebar.text_input('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
+negative_prompt = st.sidebar.text_input('Movie title', 'Breakup because of distance')
 if st.sidebar.button("Generate Playlist", type="primary"):
     data_frame_demo()
 #demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
