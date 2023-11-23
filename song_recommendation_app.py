@@ -3,6 +3,17 @@ import streamlit as st
 def intro():
     import streamlit as st
 
+    page_bg_img = '''
+    <style>
+    body {
+    background-image: url("https://images.unsplash.com/photo-1542281286-9e0a16bb7366");
+    background-size: cover;
+    }
+    </style>
+    '''
+    
+    st.markdown(page_bg_img, unsafe_allow_html=True)
+
     st.write("# Personalized Spotify Song Recommender")
     
     st.divider()
@@ -38,7 +49,26 @@ def get_recommendations(songs_df, similar_doc):
     recommendation.at[count, 'score'] = score
     count += 1
   return recommendation
+    
+def normalize_document(doc):
+    import nltk
+    import re
+    
+    # remove all strings inside [ ]
+    doc = re.sub(r'\[.*?\]', '', doc)
+    # lower case and remove special characters\whitespaces
+    doc = re.sub(r'[^a-zA-Z0-9\s]', '', doc, re.I|re.A)
+    doc = doc.lower()
+    doc = doc.strip()
+    doc = doc.replace("nbsp","")
+    # tokenize document
+    tokens = nltk.word_tokenize(doc)
 
+     # filter stopwords out of document
+    filtered_tokens = [token for token in tokens if token not in stop_words]
+
+    return filtered_tokens
+    
 def generate_recommendations(positive_prompt, negative_prompt, n):
     import streamlit as st
     import pandas as pd
