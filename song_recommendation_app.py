@@ -7,6 +7,7 @@ import gensim
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 from spotipy.oauth2 import SpotifyOAuth
+from spotipy.oauth2 import SpotifyClientCredentials
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -44,11 +45,8 @@ def authenticate_spotify():
     
     cid = '551b554ed7e14fafa21c5118bbba81fe'
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-    return spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=cid,
-                                               client_secret=secret,
-                                               redirect_uri='http://localhost:8080',
-                                               scope='playlist-modify-public',
-                                               open_browser=True))
+    client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
+    return spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 
 
 def get_recommendations(songs_df, similar_doc):
