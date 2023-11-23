@@ -46,7 +46,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     import gensim
     from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 
-    model = Doc2Vec.load("d2v_test.model")
+    model = Doc2Vec.load("data/d2v_test.model")
     positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
     negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
     similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
@@ -159,7 +159,7 @@ positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Son
 negative_prompt = st.sidebar.text_area('Movie title', 'Breakup because of distance')
 st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
 if st.sidebar.button("Generate Playlist", type="primary"):
-    data_frame_demo()
+    generate_recommendations()
 else:
     intro()
 #demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
