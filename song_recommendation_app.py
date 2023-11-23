@@ -136,7 +136,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                 print(f"No track found with the name '{track_name}'")
         else:
             print(f"No track found with the name '{track_name}'")
-        my_bar.progress((len(spotify_df)*100/n), text=progress_text)
+        my_bar.progress(int(len(spotify_df)*100/n), text=progress_text)
         if(len(spotify_df) == n):
             break
         
