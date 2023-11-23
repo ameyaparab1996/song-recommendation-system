@@ -127,7 +127,8 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                           'album_image': track['album']['images'][0]['url'],
                           'preview_url': track['preview_url'],
                           'track_uri': track['uri']}
-          spotify_df = spotify_df.append(spotify_data, ignore_index = True)
+          spotify_df = pd.concat(spotify_df,pd.DataFrame([spotify_data]))
+            #spotify_df = spotify_df.append(spotify_data, ignore_index = True)
         else:
           print(f"No track found with the name '{track_name}'")
       else:
