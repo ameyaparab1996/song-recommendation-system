@@ -154,7 +154,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                         "preview_url": None
                     },
                    hide_index=True,
-                   height=50,
+                   height=5000,
                    use_container_width=True,
                    disabled= True)
 
