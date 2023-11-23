@@ -4,7 +4,6 @@ def intro():
     import streamlit as st
 
     st.write("# Personalized Spotify Song Recommender")
-    st.sidebar.success("Write a prompt to generate recommendations")
     
     st.divider()
     st.markdown(
@@ -90,7 +89,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
       else:
         print(f"No track found with the name '{track_name}'")
 
-    st.table(spotify_df[:n])
+    st.data_editor(spotify_df[:n], disabled= True)
     
 def data_frame_demo():
     import streamlit as st
@@ -155,9 +154,10 @@ page_names_to_funcs = {
     "DataFrame Demo": data_frame_demo
 }
 
+st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
 negative_prompt = st.sidebar.text_area('Movie title', 'Breakup because of distance')
-st.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
+st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
 if st.sidebar.button("Generate Playlist", type="primary"):
     data_frame_demo()
 else:
