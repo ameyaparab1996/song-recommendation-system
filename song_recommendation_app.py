@@ -144,14 +144,14 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
     st.markdown("""
         <style>
-            .stTable tr {
+            .stDataframe tr {
                 height: 50px;
             }
         </style>
         """, 
         unsafe_allow_html=True)
     
-    st.data_editor(spotify_df[['album_image','track_name','artists']][:n], 
+    st.dataframe(spotify_df[['album_image','track_name','artists']][:n], 
                     column_config={
                         "album_image": st.column_config.ImageColumn(
                             "Album Cover"
@@ -163,8 +163,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                         "preview_url": None
                     },
                    hide_index=True,
-                   use_container_width=True,
-                   disabled= True)
+                   use_container_width=True)
 
 st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
