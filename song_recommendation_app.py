@@ -144,7 +144,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
     st.markdown("""
         <style>
-            .stDataEditor tr {
+            .stTable tr {
                 height: 50px;
             }
         </style>
@@ -163,7 +163,6 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                         "preview_url": None
                     },
                    hide_index=True,
-                   height=5000,
                    use_container_width=True,
                    disabled= True)
 
