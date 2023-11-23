@@ -17,6 +17,81 @@ def intro():
     """
     )
 
+def authenticate_spotify():
+    from spotipy.oauth2 import SpotifyOAuth
+    cid = '551b554ed7e14fafa21c5118bbba81fe'
+    secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
+    return spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=cid,
+                                               client_secret=secret,
+                                               redirect_uri='http://localhost',
+                                               scope='playlist-modify-public',
+                                               open_browser=False))
+
+def get_recommendations(songs_df, similar_doc):
+  recommendation = pd.DataFrame(columns = ['id','title','tag','artist','score'])
+  count = 0
+  for doc_tag, score in similar_doc:
+    recommendation.at[count, 'id'] = songs_df.loc[int(doc_tag)].id
+    recommendation.at[count, 'title'] = songs_df.loc[int(doc_tag)].title
+    recommendation.at[count, 'tag'] = songs_df.loc[int(doc_tag)].tag
+    recommendation.at[count, 'artist'] = songs_df.loc[int(doc_tag)].artist
+    recommendation.at[count, 'lyrics'] = songs_df.loc[int(doc_tag)].lyrics
+    recommendation.at[count, 'score'] = score
+    count += 1
+  return recommendation
+
+def generate_recommendations(positive_prompt, negative_prompt, n):
+    import streamlit as st
+    import pandas as pd
+    import spotipy
+    import gensim
+    from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+
+    model = Doc2Vec.load("d2v_test.model")
+    positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
+    negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
+    similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
+
+    sampled_df = pd.read_csv("https://drive.google.com/file/d/1uUQLH3IHQ6eN127jEzEKGUQQL6X1ZGcU/view?usp=sharing")
+    recommendations_df = get_recommendations(sampled_df, similar_doc)
+
+    sp = authenticate_spotify()
+
+    spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url'])
+
+    for i in range(0,len(recommendations_df)):
+      track_name = recommendations_df.iloc[i, 1]
+      artist_name = recommendations_df.iloc[i, 3]
+      results = sp.search(q=f'track:{track_name} artist:{artist_name}', type='track', limit=1)
+      if len(results['tracks']['items']) > 0:
+        track = results['tracks']['items'][0]
+        spotify_data = {'track_id': track['id'],
+                        'track_name': track['name'],
+                        'album_name': track['album']['name'],
+                        'artists': [artist['name'] for artist in track['artists'] if 'name' in artist],
+                        'album_image': track['album']['images'][0]['url'],
+                        'preview_url': track['preview_url'],
+                        'track_uri': track['uri']}
+        spotify_df = spotify_df.append(spotify_data, ignore_index = True)
+      elif len(results['tracks']['items']) == 0:
+        results_new = sp.search(q=f'track:{track_name}', type='track', limit=1)
+        if len(results_new['tracks']['items']) > 0 and re.sub(r'[^a-zA-Z0-9\s]', '', results_new['tracks']['items'][0]['name'].lower()) == re.sub(r'[^a-zA-Z0-9\s]', '', recommendations_df.iloc[i,1].lower()):
+          track = results_new['tracks']['items'][0]
+          spotify_data = {'track_id': track['id'],
+                          'track_name': track['name'],
+                          'album_name': track['album']['name'],
+                          'artists': [artist['name'] for artist in track['artists'] if 'name' in artist],
+                          'album_image': track['album']['images'][0]['url'],
+                          'preview_url': track['preview_url'],
+                          'track_uri': track['uri']}
+          spotify_df = spotify_df.append(spotify_data, ignore_index = True)
+        else:
+          print(f"No track found with the name '{track_name}'")
+      else:
+        print(f"No track found with the name '{track_name}'")
+
+    st.table(spotify_df[:n])
+    
 def data_frame_demo():
     import streamlit as st
     import pandas as pd
@@ -80,8 +155,9 @@ page_names_to_funcs = {
     "DataFrame Demo": data_frame_demo
 }
 
-positive_prompt = st.sidebar.text_input('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
-negative_prompt = st.sidebar.text_input('Movie title', 'Breakup because of distance')
+positive_prompt = st.sidebar.text_area(('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
+negative_prompt = st.sidebar.text_area('Movie title', 'Breakup because of distance')
+st.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
 if st.sidebar.button("Generate Playlist", type="primary"):
     data_frame_demo()
 else:
