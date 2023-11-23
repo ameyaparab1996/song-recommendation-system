@@ -1,13 +1,19 @@
 import streamlit as st
+import pandas as pd
 import nltk
 import re
+import spotipy
+import gensim
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
+from spotipy.oauth2 import SpotifyOAuth
+
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
 
+
 def intro():
-    import streamlit as st
 
     page_bg_img = '''
     <style>
@@ -33,8 +39,9 @@ def intro():
     """
     )
 
+
 def authenticate_spotify():
-    from spotipy.oauth2 import SpotifyOAuth
+    
     cid = '551b554ed7e14fafa21c5118bbba81fe'
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
     return spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=cid,
@@ -43,7 +50,9 @@ def authenticate_spotify():
                                                scope='playlist-modify-public',
                                                open_browser=False))
 
+
 def get_recommendations(songs_df, similar_doc):
+    
   recommendation = pd.DataFrame(columns = ['id','title','tag','artist','score'])
   count = 0
   for doc_tag, score in similar_doc:
@@ -75,11 +84,6 @@ def normalize_document(doc):
     return filtered_tokens
     
 def generate_recommendations(positive_prompt, negative_prompt, n):
-    import streamlit as st
-    import pandas as pd
-    import spotipy
-    import gensim
-    from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 
     st.markdown("# Spotify Song Recommendations")
     st.write(
