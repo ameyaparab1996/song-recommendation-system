@@ -144,7 +144,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
     st.markdown("""
         <style>
-            .stDataframe tr {
+            .stDataFrame tr {
                 height: 50px;
             }
         </style>
