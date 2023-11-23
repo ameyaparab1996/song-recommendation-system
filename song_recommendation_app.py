@@ -1,4 +1,10 @@
 import streamlit as st
+import nltk
+import re
+from nltk.tokenize import word_tokenize
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
 
 def intro():
     import streamlit as st
@@ -51,8 +57,7 @@ def get_recommendations(songs_df, similar_doc):
   return recommendation
     
 def normalize_document(doc):
-    import nltk
-    import re
+    stop_words = nltk.corpus.stopwords.words('english')
     
     # remove all strings inside [ ]
     doc = re.sub(r'\[.*?\]', '', doc)
