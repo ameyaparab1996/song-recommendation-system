@@ -15,8 +15,6 @@ nltk.download('wordnet')
 
 
 def intro():
-    
-    st.markdown(page_bg_img, unsafe_allow_html=True)
 
     st.write("# Personalized Spotify Song Recommender")
     
@@ -132,22 +130,11 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
             break
         
     my_bar.empty()
-
-    st.markdown("""
-        <style>
-        .image-cell img {
-            max-width: 200px;
-            max-height: 200px;
-        }
-        </style>
-        """, 
-        unsafe_allow_html=True)
     
     st.dataframe(spotify_df[['album_image','track_name','artists']][:n], 
                     column_config={
                         "album_image": st.column_config.ImageColumn(
-                            "Album Cover",
-                            width="large"
+                            "Album Cover"
                         ),
                         "track_name": "Track Name",
                         "artists": "Artists",
@@ -157,6 +144,13 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                     },
                    hide_index=True,
                    use_container_width=True)
+
+    for j in range(0, len(spotify_df)):
+        container = st.container()
+        container.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
+        container.write(spotify_df.iloc[j, 1])
+        container.write(spotify_df.iloc[j, 3])
+        container.audio(spotify_df.iloc[j, 5], format="audio/mp3")
 
 st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
