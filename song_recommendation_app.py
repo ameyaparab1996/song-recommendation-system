@@ -135,9 +135,10 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
     st.markdown("""
         <style>
-            table tr {
-                height: 50px;
-            }
+        .image-cell img {
+            max-width: 200px;
+            max-height: 200px;
+        }
         </style>
         """, 
         unsafe_allow_html=True)
