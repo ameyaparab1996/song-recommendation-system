@@ -15,15 +15,6 @@ nltk.download('wordnet')
 
 
 def intro():
-
-    page_bg_img = '''
-    <style>
-    body {
-    background-image: url("https://unsplash.com/photos/black-remote-control-on-white-textile-6k4HkET8dPM");
-    background-size: cover;
-    }
-    </style>
-    '''
     
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
@@ -154,7 +145,8 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     st.dataframe(spotify_df[['album_image','track_name','artists']][:n], 
                     column_config={
                         "album_image": st.column_config.ImageColumn(
-                            "Album Cover"
+                            "Album Cover",
+                            width="large"
                         ),
                         "track_name": "Track Name",
                         "artists": "Artists",
@@ -173,6 +165,4 @@ if st.sidebar.button("Generate Playlist", type="primary"):
     generate_recommendations(positive_prompt, negative_prompt, n)
 else:
     intro()
-#demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
-#page_names_to_funcs[demo_name]()
     
