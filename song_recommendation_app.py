@@ -167,6 +167,7 @@ def display_recommendations(spotify_df):
     
     def update_include():
         spotify_df['include'] = include
+        print(include)
         st.session_state.checkbox = True
     
     for j in range(0, len(spotify_df)):
