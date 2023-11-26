@@ -161,7 +161,7 @@ def display_recommendations(spotify_df):
             text-align: center !important;
         }
 
-        stDataFrame st-emotion-cache-2lh61o e1w7nams0 {
+        .stDataFrame st-emotion-cache-2lh61o e1w7nams0 {
             height: 290px !important;
         }
     </style>
