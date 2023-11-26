@@ -8,7 +8,7 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
-from pages import generate_recommendations
+import pages.generate_recommendations
 
 nltk.download('stopwords')
 nltk.download('punkt')
