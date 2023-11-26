@@ -224,15 +224,15 @@ def display_recommendations(spotify_df, positive_prompt):
 def spotify_redirect():
     st.session_state.checkbox = True
     token_info = sp_oauth.get_access_token(redirected_url)
-        if token_info:
-            sp = spotipy.Spotify(auth=token_info["access_token"])
-            st.success("Successfully authenticated with Spotify!")
-            playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
-            playlist_id = playlist_info['id']
-            sp.playlist_add_items(playlist_id, track_uri)
-            st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
-        else:
-            st.error("Failed to authenticate. Please try again.")
+    if token_info:
+        sp = spotipy.Spotify(auth=token_info["access_token"])
+        st.success("Successfully authenticated with Spotify!")
+        playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
+        playlist_id = playlist_info['id']
+        sp.playlist_add_items(playlist_id, track_uri)
+        st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
+    else:
+        st.error("Failed to authenticate. Please try again.")
 
 def create_playlist(track_uri, username, playlist_name, playlist_description):
     #sp = authenticate_spotify('playlist-modify-public')
