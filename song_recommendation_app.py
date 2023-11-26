@@ -126,8 +126,10 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
             break
         
     my_bar.empty()
+
+    final_playlist = display_recommendations(spotify_df)
     
-    st.data_editor(spotify_df[['album_image','track_name','artists']][:n], 
+    st.data_editor(final_playlist[['album_image','track_name','artists']], 
                     column_config={
                         "album_image": st.column_config.ImageColumn(
                             "Album Cover"
@@ -140,8 +142,6 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                     },
                    hide_index=True,
                    use_container_width=True)
-    
-    display_recommendations(spotify_df)
 
 
 def display_recommendations(spotify_df):
@@ -187,7 +187,10 @@ def display_recommendations(spotify_df):
         track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
         artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
         preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-        include.append(playlist_col.checkbox(label, value=False)),
+        include.append(playlist_col.checkbox(value=True))
+
+    spotify_df['include'] = include
+    return spotify_df[spotify_df['include']]
 
 st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
