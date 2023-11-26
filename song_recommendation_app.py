@@ -201,7 +201,7 @@ def display_recommendations(spotify_df, positive_prompt):
     st.dataframe(spotify_df[spotify_df['include']])
         
     if create_button:
-        create_playlist(list(spotify_df[spotify_df['include'], 'track_uri']), username, playlist_name, positive_prompt)
+        create_playlist(list(spotify_df[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
         
 
 def create_playlist(track_uri, username, playlist_name, playlist_description):
