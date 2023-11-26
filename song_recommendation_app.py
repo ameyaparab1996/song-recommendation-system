@@ -41,9 +41,9 @@ def authenticate_spotify(auth_scope):
     if auth_scope == 'playlist-modify-public':
         auth_manager= SpotifyOAuth(client_id=cid,
                                    client_secret=secret,
-                                   redirect_uri='http://localhost',
+                                   redirect_uri='http://localhost:8080',
                                    scope=auth_scope,
-                                   open_browser=False)
+                                   open_browser=True)
         return spotipy.Spotify(auth_manager = auth_manager)
     else:
         return spotipy.Spotify(client_credentials_manager = client_credentials_manager)
