@@ -165,7 +165,7 @@ def display_recommendations(spotify_df):
             height: 200px !important;
         }
 
-        [data-testid="data-grid-canvas"] table > tbody >tr {
+       tr {
             height: 200px !important;
         }
     </style>
