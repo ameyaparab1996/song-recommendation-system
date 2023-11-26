@@ -128,20 +128,6 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     my_bar.empty()
 
     final_playlist = display_recommendations(spotify_df)
-    
-    st.dataframe(final_playlist[['album_image','track_name','artists']], 
-                    column_config={
-                        "album_image": st.column_config.ImageColumn(
-                            "Album Cover"
-                        ),
-                        "track_name": "Track Name",
-                        "artists": "Artists",
-                        "track_id": None,
-                        "album_name": None,
-                        "preview_url": None
-                    },
-                   hide_index=True,
-                   use_container_width=True)
 
 
 def display_recommendations(spotify_df):
