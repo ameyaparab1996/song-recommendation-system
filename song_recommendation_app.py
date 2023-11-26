@@ -162,7 +162,7 @@ def display_recommendations(spotify_df):
         }
 
         .stDataFrame st-emotion-cache-2lh61o e1w7nams0 {
-            height: 290px !important;
+            height: 590px !important;
         }
     </style>
     '''
