@@ -144,7 +144,7 @@ def display_recommendations(spotify_df):
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            height: 120px !important;
+            height: 130px !important;
         }
 
         h3 {
