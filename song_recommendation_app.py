@@ -185,7 +185,7 @@ def display_recommendations(spotify_df):
     #if st.button("Create Playlist"):
     #    st.session_state.value = spotify_df[spotify_df['include']]
 
-    st.dataframe(spotify_df[spotify_df['include'])
+    st.dataframe(spotify_df[spotify_df['include']])
     
     #st.dataframe(spotify_df[spotify_df['include']])
     #return spotify_df[spotify_df['include']]
