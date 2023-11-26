@@ -183,8 +183,7 @@ def display_recommendations(spotify_df):
 
     container.dataframe(st.session_state.value)
     
-    
-        st.dataframe(spotify_df[spotify_df['include']])
+    #st.dataframe(spotify_df[spotify_df['include']])
     #return spotify_df[spotify_df['include']]
 
 st.sidebar.success("Write a prompt to generate recommendations")
