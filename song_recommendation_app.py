@@ -133,7 +133,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 def display_recommendations(spotify_df):
     css = '''
     <style>
-        .stMarkdown p, .row-widget stCheckbox {
+        .stMarkdown p, .'row-widget stCheckbox' {
             height: 100px !important;
             padding-top: 30px !important;
             align: center !important;
