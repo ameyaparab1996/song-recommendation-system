@@ -136,6 +136,7 @@ def display_recommendations(spotify_df):
         .stMarkdown p, [data-testid="stCheckbox"] {
             height: 100px !important;
             padding-top: 30px !important;
+            display: flex !important;
             align-items: center !important;
             justify-content: center !important;
         }
