@@ -129,7 +129,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
     final_playlist = display_recommendations(spotify_df)
     
-    st.data_editor(final_playlist[['album_image','track_name','artists']], 
+    st.dataframe(final_playlist[['album_image','track_name','artists']], 
                     column_config={
                         "album_image": st.column_config.ImageColumn(
                             "Album Cover"
@@ -148,26 +148,23 @@ def display_recommendations(spotify_df):
     css = '''
     <style>
         .stMarkdown p, .stCheckbox {
-            height: 200px !important;
-            padding-top: 60px !important;
+            height: 100px !important;
+            padding-top: 30px !important;
             align: center !important;
         }
 
         .stAudio {
-            height: 190px !important;
-            padding-bottom: 80px !important;
+            height: 100px !important;
+            padding-bottom: 40px !important;
         }
 
-        h3, p {
+        h3 {
             text-align: center !important;
-        }
-
-        [data-testid="stTable"] tr {
-            height: 200px !important;
-        }
-
-       [role="row"] {
-            height: 200px !important;
+            height: 50px !important;
+        } 
+        
+        p {
+            text-align: center !important;
         }
     </style>
     '''
