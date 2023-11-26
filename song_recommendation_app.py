@@ -167,7 +167,7 @@ def display_recommendations(spotify_df):
     
     def update_include():
         spotify_df['include'] = include
-        display_recommendations(spotify_df)
+        st.rerun()
     
     for j in range(0, len(spotify_df)):
             #col = st.container()
