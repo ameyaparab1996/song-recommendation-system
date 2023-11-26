@@ -146,7 +146,7 @@ def display_recommendations(spotify_df):
 
         h3 {
             text-align: center !important;
-            height: 50px !important;
+            height: 100px !important;
         } 
         
         p {
@@ -163,7 +163,7 @@ def display_recommendations(spotify_df):
     preview_col.subheader("Preview       ", divider='green')
     playlist_col.subheader("Add to Playlist", divider='green')
     
-    include = []
+    include = [True] * len(spotify_df)
     def update_include():
         spotify_df['include'] = include
     
