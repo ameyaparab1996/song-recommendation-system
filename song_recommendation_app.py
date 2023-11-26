@@ -164,8 +164,10 @@ def display_recommendations(spotify_df):
     playlist_col.subheader("Add to Playlist", divider='green')
     
     include = [True] * len(spotify_df)
+    
     def update_include():
         spotify_df['include'] = include
+        st.stop()
     
     for j in range(0, len(spotify_df)):
             #col = st.container()
