@@ -170,14 +170,14 @@ def display_recommendations(spotify_df):
         spotify_df['include'] = include
         st.session_state.checkbox = True
 
-    with st.form(key='my_form'):
-        for j in range(0, len(spotify_df)):
+    #with st.form(key='my_form'):
+    for j in range(0, len(spotify_df)):
             album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
             track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
             include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 6], label_visibility="collapsed")
-        st.form_submit_button(label='Submit', on_click=update_include())
+        #st.form_submit_button(label='Submit', on_click=update_include())
     #st.stop()
 
     ##### Option using a container #####
