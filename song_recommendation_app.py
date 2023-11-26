@@ -164,6 +164,8 @@ def display_recommendations(spotify_df):
     playlist_col.subheader("Add to Playlist", divider='green')
     
     include = []
+    def update_include():
+        spotify_df['include'] = include
     
     for j in range(0, len(spotify_df)):
             #col = st.container()
@@ -172,9 +174,6 @@ def display_recommendations(spotify_df):
         artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
         preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
         include[j] = playlist_col.checkbox("",key=j,value=True, on_change=update_include())
-
-    def update_include():
-        spotify_df['include'] = include
 
     if st.button("Create Playlist"):
         st.dataframe(spotify_df[spotify_df['include']])
