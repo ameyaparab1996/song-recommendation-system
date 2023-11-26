@@ -73,7 +73,7 @@ def normalize_document(doc):
 def generate_recommendations(positive_prompt, negative_prompt, n):
 
     st.markdown("# Spotify Song Recommendations")
-    st.markdown("## Here are the songs that best match your prompt")
+    st.markdown("##### Here are the songs that best match your prompt")
 
     progress_text = "Fetching Songs. Please wait."
     my_bar = st.progress(0, text=progress_text)
@@ -170,7 +170,6 @@ def display_recommendations(spotify_df):
         track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
         artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
         preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-        st.divider()
 
 st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
