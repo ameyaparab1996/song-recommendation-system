@@ -71,43 +71,31 @@ def normalize_document(doc):
     return filtered_tokens
     
 def generate_recommendations(positive_prompt, negative_prompt, n):
-
-    st.markdown("# Spotify Song Recommendations")
-    st.markdown("###### Here are the songs that best match your prompt")
-
-    progress_text = "Fetching Songs. Please wait."
-    my_bar = st.progress(0, text=progress_text)
+    if !st.session_state.checkbox:
+        st.markdown("# Spotify Song Recommendations")
+        st.markdown("###### Here are the songs that best match your prompt")
     
-    model = Doc2Vec.load("data/d2v_test.model")
-    positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
-    negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
-    similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
-
-    sampled_df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
-    recommendations_df = get_recommendations(sampled_df, similar_doc)
-
-    sp = authenticate_spotify()
-
-    spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url'])
-
-    for i in range(0,len(recommendations_df)):
-        track_name = recommendations_df.iloc[i, 1]
-        artist_name = recommendations_df.iloc[i, 3]
-        results = sp.search(q=f'track:{track_name} artist:{artist_name}', type='track', limit=1)
-        if len(results['tracks']['items']) > 0:
-            track = results['tracks']['items'][0]
-            spotify_data = {'track_id': track['id'],
-                            'track_name': track['name'],
-                            'album_name': track['album']['name'],
-                            'artists': [artist['name'] for artist in track['artists'] if 'name' in artist],
-                            'album_image': track['album']['images'][0]['url'],
-                            'preview_url': track['preview_url'],
-                            'track_uri': track['uri']}
-            spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
-        elif len(results['tracks']['items']) == 0:
-            results_new = sp.search(q=f'track:{track_name}', type='track', limit=1)
-            if len(results_new['tracks']['items']) > 0 and re.sub(r'[^a-zA-Z0-9\s]', '', results_new['tracks']['items'][0]['name'].lower()) == re.sub(r'[^a-zA-Z0-9\s]', '', recommendations_df.iloc[i,1].lower()):
-                track = results_new['tracks']['items'][0]
+        progress_text = "Fetching Songs. Please wait."
+        my_bar = st.progress(0, text=progress_text)
+        
+        model = Doc2Vec.load("data/d2v_test.model")
+        positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
+        negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
+        similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
+    
+        sampled_df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
+        recommendations_df = get_recommendations(sampled_df, similar_doc)
+    
+        sp = authenticate_spotify()
+    
+        spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url'])
+    
+        for i in range(0,len(recommendations_df)):
+            track_name = recommendations_df.iloc[i, 1]
+            artist_name = recommendations_df.iloc[i, 3]
+            results = sp.search(q=f'track:{track_name} artist:{artist_name}', type='track', limit=1)
+            if len(results['tracks']['items']) > 0:
+                track = results['tracks']['items'][0]
                 spotify_data = {'track_id': track['id'],
                                 'track_name': track['name'],
                                 'album_name': track['album']['name'],
@@ -116,16 +104,28 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                                 'preview_url': track['preview_url'],
                                 'track_uri': track['uri']}
                 spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
-                #spotify_df = spotify_df.append(spotify_data, ignore_index = True)
+            elif len(results['tracks']['items']) == 0:
+                results_new = sp.search(q=f'track:{track_name}', type='track', limit=1)
+                if len(results_new['tracks']['items']) > 0 and re.sub(r'[^a-zA-Z0-9\s]', '', results_new['tracks']['items'][0]['name'].lower()) == re.sub(r'[^a-zA-Z0-9\s]', '', recommendations_df.iloc[i,1].lower()):
+                    track = results_new['tracks']['items'][0]
+                    spotify_data = {'track_id': track['id'],
+                                    'track_name': track['name'],
+                                    'album_name': track['album']['name'],
+                                    'artists': [artist['name'] for artist in track['artists'] if 'name' in artist],
+                                    'album_image': track['album']['images'][0]['url'],
+                                    'preview_url': track['preview_url'],
+                                    'track_uri': track['uri']}
+                    spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
+                    #spotify_df = spotify_df.append(spotify_data, ignore_index = True)
+                else:
+                    print(f"No track found with the name '{track_name}'")
             else:
                 print(f"No track found with the name '{track_name}'")
-        else:
-            print(f"No track found with the name '{track_name}'")
-        my_bar.progress(int(len(spotify_df)*100/n), text=progress_text)
-        if(len(spotify_df) == n):
-            break
-        
-    my_bar.empty()
+            my_bar.progress(int(len(spotify_df)*100/n), text=progress_text)
+            if(len(spotify_df) == n):
+                break
+            
+        my_bar.empty()
 
     display_recommendations(spotify_df)
 
