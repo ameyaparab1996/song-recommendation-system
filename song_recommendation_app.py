@@ -147,8 +147,13 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
     css = '''
     <style>
-        .stImage, .stAudio, .stText, .td {
+        .stMarkdown, .stTable tr {
             height: 150px !important;
+        }
+
+        .stAudio {
+            height: 180px !important;
+        }
     </style>
     '''
     
@@ -162,8 +167,8 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     for j in range(0, len(spotify_df)):
         #col = st.container()
         album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
-        track_name_col.text(spotify_df.iloc[j, 1])
-        artists_col.text(', '.join(spotify_df.iloc[j, 3]))
+        track_name_col.write(spotify_df.iloc[j, 1])
+        artists_col.write(', '.join(spotify_df.iloc[j, 3]))
         preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
 
 st.sidebar.success("Write a prompt to generate recommendations")
