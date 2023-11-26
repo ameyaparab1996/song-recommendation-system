@@ -149,8 +149,8 @@ def display_recommendations(spotify_df):
             text-align: center !important;
         }
 
-        .stTable tr {
-            height: 1000px !important;
+        [data-testid="stTable"] tr {
+            height: 200px !important;
     }
     </style>
     '''
