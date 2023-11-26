@@ -189,8 +189,9 @@ def display_recommendations(spotify_df):
     #st.dataframe(spotify_df[spotify_df['include']])
     #return spotify_df[spotify_df['include']]
 
-
-st.session_state.checkbox = False
+if "checkbox" not in st.session_state:
+    st.session_state.checkbox = False
+    
 st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
 negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance')
