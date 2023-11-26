@@ -100,7 +100,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     
     sp = authenticate_spotify('fetch_songs')
     
-    spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url'])
+    spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url', 'track_uri'])
     
     for i in range(0,len(recommendations_df)):
         track_name = recommendations_df.iloc[i, 1]
@@ -193,7 +193,7 @@ def display_recommendations(spotify_df, positive_prompt):
             track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-            include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 6], label_visibility="collapsed")
+            include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
         username = st.text_input('Spotify Username', help="To find your username go to Settings and privacy > Account")
         playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
         create_button = st.form_submit_button(label='Create Playlist', on_click=update_include())
@@ -216,8 +216,8 @@ if "checkbox" not in st.session_state:
     st.session_state.checkbox = False
     
 st.sidebar.success("Write a prompt to generate recommendations")
-positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
-negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance')
+positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for.")
+negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be.")
 n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
 if st.sidebar.button("Generate Playlist", type="primary") or st.session_state.checkbox:
     generate_recommendations(positive_prompt, negative_prompt, n)
