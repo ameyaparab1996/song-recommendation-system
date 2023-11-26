@@ -243,7 +243,7 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
     sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
     auth_url = sp_oauth.get_authorize_url()
     st.markdown(f"[Login with Spotify]({auth_url})")
-    with st.form(key='playlist_form'):
+    with st.form(key='authentication_form'):
         redirected_url = st.text_input("Enter the redirected URL after login:")
         st.form_submit_button(label='Add to Playlist', on_change=spotify_redirect(sp_oauth, redirected_url))
     
