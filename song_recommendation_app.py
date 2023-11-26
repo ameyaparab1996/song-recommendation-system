@@ -127,7 +127,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         
     my_bar.empty()
     
-    st.dataframe(spotify_df[['album_image','track_name','artists']][:n], 
+    st.data_editor(spotify_df[['album_image','track_name','artists']][:n], 
                     column_config={
                         "album_image": st.column_config.ImageColumn(
                             "Album Cover"
@@ -140,7 +140,9 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                     },
                    hide_index=True,
                    use_container_width=True)
+    
     display_recommendations(spotify_df)
+
 
 def display_recommendations(spotify_df):
     css = '''
@@ -155,7 +157,7 @@ def display_recommendations(spotify_df):
             padding-bottom: 80px !important;
         }
 
-        h3 {
+        h3, p {
             text-align: center !important;
         }
     </style>
