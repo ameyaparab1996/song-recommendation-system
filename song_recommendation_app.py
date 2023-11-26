@@ -163,10 +163,10 @@ def display_recommendations(spotify_df):
     preview_col.subheader("Preview       ", divider='green')
     playlist_col.subheader("Add to Playlist", divider='green')
     
-    include = [True] * (len(spotify_df) + 1)
+    include = [True] * (len(spotify_df))
     
     def update_include():
-        spotify_df['include'] = include[:-1]
+        spotify_df['include'] = include
         st.session_state.checkbox = True
     placeholder = st.empty()
     for j in range(0, len(spotify_df)+1):
