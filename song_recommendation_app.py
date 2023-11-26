@@ -174,7 +174,7 @@ def display_recommendations(spotify_df):
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
             include.append(playlist_col.checkbox("",key=j,value=True))
 
-        form.form_submit_button("Submit")
+        st.form_submit_button("Submit")
     spotify_df['include'] = include
     return spotify_df[spotify_df['include']]
 
