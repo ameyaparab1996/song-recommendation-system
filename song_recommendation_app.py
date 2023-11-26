@@ -205,7 +205,7 @@ def display_recommendations(spotify_df, positive_prompt):
         spotify_df['include'] = include
         st.session_state.checkbox = True
     
-    with st.form(key='my_form'):
+    with st.form(key='playlist_form'):
         for j in range(0, len(spotify_df)):
             album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
             track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
@@ -243,7 +243,9 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
     sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
     auth_url = sp_oauth.get_authorize_url()
     st.markdown(f"[Login with Spotify]({auth_url})")
-    redirected_url = st.text_input("Enter the redirected URL after login:", on_change=spotify_redirect(sp_oauth, redirect_uri))
+    with st.form(key='playlist_form'):
+        redirected_url = st.text_input("Enter the redirected URL after login:")
+        st.form_submit_button(label='Add to Playlist', on_change=spotify_redirect(sp_oauth, redirected_url))
     
     
 
