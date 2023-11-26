@@ -175,7 +175,15 @@ def display_recommendations(spotify_df):
         preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
         include[j] = playlist_col.checkbox("",key=j,value=True, on_change=update_include())
 
+    ##### Option using a container #####
+    container = st.container()
+
     if st.button("Create Playlist"):
+        st.session_state.value = spotify_df[spotify_df['include']]
+
+    container.dataframe(st.session_state.value)
+    
+    
         st.dataframe(spotify_df[spotify_df['include']])
     #return spotify_df[spotify_df['include']]
 
