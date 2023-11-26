@@ -150,7 +150,7 @@ def display_recommendations(spotify_df):
         }
 
         .stTable tr {
-            height: 890px !important;
+            height: 1000px !important;
     }
     </style>
     '''
