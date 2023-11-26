@@ -145,12 +145,12 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 def display_recommendations(spotify_df):
     css = '''
     <style>
-        .stMarkdown, .stTable tr {
+        .stWrite, .stTable tr {
             height: 200px !important;
         }
 
         .stAudio {
-            height: 190px !important;
+            padding-top: 100px !important;
         }
     </style>
     '''
