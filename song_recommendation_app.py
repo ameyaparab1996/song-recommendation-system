@@ -163,7 +163,11 @@ def display_recommendations(spotify_df):
 
         [data-testid="stTable"] tr {
             height: 200px !important;
-    }
+        }
+
+        table tbody tr {
+            height: 200px !important;
+        }
     </style>
     '''
     
