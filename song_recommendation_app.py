@@ -175,7 +175,7 @@ def display_recommendations(spotify_df):
             track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-            include[j] = playlist_col.checkbox("",key=j, on_change=update_include())
+            include[j] = playlist_col.checkbox("",key=j, value=True, on_change=update_include())
     #st.stop()
 
     ##### Option using a container #####
