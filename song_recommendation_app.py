@@ -177,7 +177,7 @@ def display_recommendations(spotify_df):
 
     ##### Option using a container #####
     container = st.container()
-
+    st.session_state.value = spotify_df
     if st.button("Create Playlist"):
         st.session_state.value = spotify_df[spotify_df['include']]
 
