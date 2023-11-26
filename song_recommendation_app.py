@@ -198,18 +198,34 @@ def display_recommendations(spotify_df, positive_prompt):
         playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
         create_button = st.form_submit_button(label='Create Playlist', on_click=update_include())
 
-    st.dataframe(spotify_df[spotify_df['include']])
+    #st.dataframe(spotify_df[spotify_df['include']])
         
     if create_button:
         create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
         
 
 def create_playlist(track_uri, username, playlist_name, playlist_description):
-    sp = authenticate_spotify('playlist-modify-public')
-    playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
-    playlist_id = playlist_info['id']
-    sp.playlist_add_items(playlist_id, track_uri)
-    st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
+    #sp = authenticate_spotify('playlist-modify-public')
+    cid = '551b554ed7e14fafa21c5118bbba81fe'
+    secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
+    redirect_uri='https://song-recommendation-system.streamlit.app/'
+
+    sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
+    auth_url = sp_oauth.get_authorize_url()
+    st.markdown(f"[Login with Spotify]({auth_url})")
+    redirected_url = st.text_input("Enter the redirected URL after login:")
+    if redirected_url:
+        token_info = sp_oauth.get_access_token(redirected_url)
+        if token_info:
+            sp = spotipy.Spotify(auth=token_info["access_token"])
+            st.success("Successfully authenticated with Spotify!")
+        else:
+            st.error("Failed to authenticate. Please try again.")
+    
+    #playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
+    #playlist_id = playlist_info['id']
+    #sp.playlist_add_items(playlist_id, track_uri)
+    #st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
     
 
 if "checkbox" not in st.session_state:
