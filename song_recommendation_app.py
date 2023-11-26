@@ -160,6 +160,10 @@ def display_recommendations(spotify_df):
         h3, p {
             text-align: center !important;
         }
+
+        .stDataFrame {
+            height: 290px !important;
+        }
     </style>
     '''
     
