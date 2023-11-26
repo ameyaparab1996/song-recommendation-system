@@ -240,16 +240,16 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
         else:
             st.error("Failed to authenticate. Please try again.")
     
-    #playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
-    #playlist_id = playlist_info['id']
-    #sp.playlist_add_items(playlist_id, track_uri)
-    #st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
+    playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
+    playlist_id = playlist_info['id']
+    sp.playlist_add_items(playlist_id, track_uri)
+    st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
     
 
 if "checkbox" not in st.session_state:
     st.session_state.checkbox = False
     
-st.sidebar.success("Write a prompt to generate recommendations")
+st.sidebar.write("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for.")
 negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be.")
 n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
