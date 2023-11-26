@@ -164,8 +164,6 @@ def display_recommendations(spotify_df):
     playlist_col.subheader("Add to Playlist", divider='green')
     
     include = [True] * len(spotify_df)
-
-    st.session_state.checkbox = False
     
     def update_include():
         spotify_df['include'] = include
@@ -181,16 +179,18 @@ def display_recommendations(spotify_df):
     #st.stop()
 
     ##### Option using a container #####
-    container = st.container()
-    st.session_state.value = spotify_df
-    if st.button("Create Playlist"):
-        st.session_state.value = spotify_df[spotify_df['include']]
+    #container = st.container()
+    #st.session_state.value = spotify_df
+    #if st.button("Create Playlist"):
+    #    st.session_state.value = spotify_df[spotify_df['include']]
 
-    container.dataframe(st.session_state.value)
+    st.dataframe(spotify_df)
     
     #st.dataframe(spotify_df[spotify_df['include']])
     #return spotify_df[spotify_df['include']]
 
+
+st.session_state.checkbox = False
 st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
 negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance')
