@@ -30,14 +30,25 @@ def intro():
     )
 
 
-def authenticate_spotify():
+def authenticate_spotify(auth_scope):
     
     cid = '551b554ed7e14fafa21c5118bbba81fe'
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-    client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
-    return spotipy.Spotify(client_credentials_manager = client_credentials_manager)
+    
+    client_credentials_manager = SpotifyClientCredentials(client_id=cid, 
+                                                          client_secret=secret)
 
+    if auth_scope == 'playlist-modify-public':
+        auth_manager= SpotifyOAuth(client_id=cid,
+                                   client_secret=secret,
+                                   redirect_uri='http://localhost',
+                                   scope=auth_scope,
+                                   open_browser=False)
+          return spotipy.Spotify(auth_manager = auth_manager)
+    else:
+        return spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 
+  
 def get_recommendations(songs_df, similar_doc):
     
   recommendation = pd.DataFrame(columns = ['id','title','tag','artist','score'])
@@ -73,10 +84,10 @@ def normalize_document(doc):
 def generate_recommendations(positive_prompt, negative_prompt, n):
     
     st.markdown("# Spotify Song Recommendations")
-    st.markdown("###### Here are the songs that best match your prompt")
+    st.markdown("###### Here are the songs that best match your prompt 🎵")
 
     if st.session_state.checkbox == False:
-        progress_text = "Fetching Songs. Please wait."
+        progress_text = "Fetching Songs 🎶. Please wait ⌛."
         my_bar = st.progress(0, text=progress_text)
         
     model = Doc2Vec.load("data/d2v_test.model")
@@ -87,7 +98,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     sampled_df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
     recommendations_df = get_recommendations(sampled_df, similar_doc)
     
-    sp = authenticate_spotify()
+    sp = authenticate_spotify('fetch_songs')
     
     spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url'])
     
@@ -129,10 +140,10 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     if st.session_state.checkbox == False:
         my_bar.empty()
 
-    display_recommendations(spotify_df)
+    display_recommendations(spotify_df, positive_prompt)
 
 
-def display_recommendations(spotify_df):
+def display_recommendations(spotify_df, positive_prompt):
     css = '''
     <style>
         .stMarkdown p, [data-testid="stCheckbox"] {
@@ -184,19 +195,22 @@ def display_recommendations(spotify_df):
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
             include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 6], label_visibility="collapsed")
         username = st.text_input('Spotify Username', help="To find your username go to Settings and privacy > Account")
-        st.form_submit_button(label='Create Playlist', on_click=update_include())
-    #st.stop()
-
-    ##### Option using a container #####
-    #container = st.container()
-    #st.session_state.value = spotify_df
-    #if st.button("Create Playlist"):
-    #    st.session_state.value = spotify_df[spotify_df['include']]
+        playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
+        create_button = st.form_submit_button(label='Create Playlist', on_click=update_include())
 
     st.dataframe(spotify_df[spotify_df['include']])
+        
+    if create_button:
+        create_playlist(list(spotify_df[spotify_df['include'], 'track_uri']), username, playlist_name, positive_prompt)
+        
+
+def create_playlist(track_uri, username, playlist_name, playlist_description):
+    sp = authenticate_spotify('playlist-modify-public')
+    playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
+    playlist_id = playlist_info['id']
+    sp.playlist_add_items(playlist_id, track_uri)
+    st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
     
-    #st.dataframe(spotify_df[spotify_df['include']])
-    #return spotify_df[spotify_df['include']]
 
 if "checkbox" not in st.session_state:
     st.session_state.checkbox = False
