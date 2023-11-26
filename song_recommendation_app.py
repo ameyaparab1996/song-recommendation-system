@@ -151,7 +151,7 @@ def display_recommendations(spotify_df):
 
         .stAudio {
             height: 100px !important;
-            padding-top: 10px !important;
+            padding-top: 40px !important;
         }
     </style>
     '''
