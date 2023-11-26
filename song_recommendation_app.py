@@ -170,12 +170,14 @@ def display_recommendations(spotify_df):
         st.session_state.checkbox = True
     
     for j in range(0, len(spotify_df)+1):
+        disable_checkbox = True
         if j < len(spotify_df):
+            disable_checkbox = False
             album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
             track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-            include[j] = playlist_col.checkbox("",key=j, value=True, on_change=update_include())
+        include[j] = playlist_col.checkbox("",key=j, value=True, disabled=disable_checkbox, label_visibility="collapsed", on_change=update_include()) 
     #st.stop()
 
     ##### Option using a container #####
