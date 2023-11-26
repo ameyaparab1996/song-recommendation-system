@@ -165,8 +165,8 @@ def display_recommendations(spotify_df):
     for j in range(0, len(spotify_df)):
         #col = st.container()
         album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
-        track_name_col.markdown(""" <p> """spotify_df.iloc[j, 1]""" </p> """)
-        artists_col.markdown(""" <p> """', '.join(spotify_df.iloc[j, 3])""" </p> """)
+        track_name_col.markdown(""" <p> """ + spotify_df.iloc[j, 1] + """ </p> """)
+        artists_col.markdown(""" <p> """ + ', '.join(spotify_df.iloc[j, 3]) + """ </p> """)
         preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
 
 st.sidebar.success("Write a prompt to generate recommendations")
