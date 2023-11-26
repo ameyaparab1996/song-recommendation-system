@@ -127,7 +127,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         
     my_bar.empty()
 
-    final_playlist = display_recommendations(spotify_df)
+    display_recommendations(spotify_df)
 
 
 def display_recommendations(spotify_df):
@@ -164,19 +164,21 @@ def display_recommendations(spotify_df):
     playlist_col.subheader("Add to Playlist", divider='green')
     
     include = []
-
-    with st.form("songs_form"):
-        for j in range(0, len(spotify_df)):
+    
+    for j in range(0, len(spotify_df)):
             #col = st.container()
-            album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
-            track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
-            artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
-            preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-            include.append(playlist_col.checkbox("",key=j,value=True))
+        album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
+        track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
+        artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
+        preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
+        include[j] = playlist_col.checkbox("",key=j,value=True, on_change=update_include())
 
-        st.form_submit_button("Submit")
-    spotify_df['include'] = include
-    return spotify_df[spotify_df['include']]
+    def update_include():
+        spotify_df['include'] = include
+
+    if st.button("Create Playlist"):
+        st.dataframe(spotify_df[spotify_df['include']])
+    #return spotify_df[spotify_df['include']]
 
 st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
