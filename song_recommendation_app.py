@@ -164,15 +164,17 @@ def display_recommendations(spotify_df):
     playlist_col.subheader("Add to Playlist", divider='green')
     
     include = []
-    
+
+    form = st.form("songs_form")
     for j in range(0, len(spotify_df)):
         #col = st.container()
         album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
         track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
         artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
         preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-        include.append(playlist_col.checkbox("",key=j,value=True))
+        include.append(playlist_col.form.checkbox("",key=j,value=True))
 
+    form.form_submit_button("Submit")
     spotify_df['include'] = include
     return spotify_df[spotify_df['include']]
 
