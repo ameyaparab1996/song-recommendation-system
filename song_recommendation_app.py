@@ -164,10 +164,12 @@ def display_recommendations(spotify_df):
     playlist_col.subheader("Add to Playlist", divider='green')
     
     include = [True] * len(spotify_df)
+
+    st.session_state.checkbox = False
     
     def update_include():
         spotify_df['include'] = include
-        st.rerun()
+        st.session_state.checkbox = True
     
     for j in range(0, len(spotify_df)):
             #col = st.container()
@@ -193,7 +195,7 @@ st.sidebar.success("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection')
 negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance')
 n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
-if st.sidebar.button("Generate Playlist", type="primary"):
+if st.sidebar.button("Generate Playlist", type="primary") or st.session_state.checkbox:
     generate_recommendations(positive_prompt, negative_prompt, n)
 else:
     intro()
