@@ -147,12 +147,12 @@ def display_recommendations(spotify_df):
     <style>
         .stMarkdown p {
             height: 200px !important;
-            padding-top: 50px !important;
+            padding-top: 60px !important;
         }
 
         .stAudio {
             height: 190px !important;
-            padding-bottom: 50px !important;
+            padding-bottom: 60px !important;
         }
     </style>
     '''
