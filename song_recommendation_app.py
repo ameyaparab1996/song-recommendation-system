@@ -155,7 +155,7 @@ def display_recommendations(spotify_df):
             padding-bottom: 80px !important;
         }
 
-        .h3 {
+        h3 {
             text-align: center !important;
         }
     </style>
