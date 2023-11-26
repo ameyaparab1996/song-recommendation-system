@@ -168,7 +168,7 @@ def display_recommendations(spotify_df):
     def update_include():
         spotify_df['include'] = include[:-1]
         st.session_state.checkbox = True
-    
+    placeholder = st.empty()
     for j in range(0, len(spotify_df)+1):
         disable_checkbox = True
         if j < len(spotify_df):
@@ -179,8 +179,7 @@ def display_recommendations(spotify_df):
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
             include[j] = playlist_col.checkbox("",key=j, value=True, disabled=disable_checkbox, label_visibility="collapsed", on_change=update_include())
         else:
-            with st.empty():
-                include[j] = playlist_col.checkbox("",key=j, value=True, disabled=disable_checkbox, label_visibility="collapsed", on_change=update_include()) 
+            placeholder.text("Hello") 
     #st.stop()
 
     ##### Option using a container #####
