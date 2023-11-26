@@ -134,7 +134,7 @@ def display_recommendations(spotify_df):
     css = '''
     <style>
         .stMarkdown p, [data-testid="stCheckbox"] {
-            height: 135px !important;
+            height: 140px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -144,7 +144,7 @@ def display_recommendations(spotify_df):
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            height: 135px !important;
+            height: 120px !important;
         }
 
         h3 {
