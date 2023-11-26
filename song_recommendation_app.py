@@ -165,7 +165,7 @@ def display_recommendations(spotify_df):
             height: 200px !important;
         }
 
-       tr {
+       [role="row"] {
             height: 200px !important;
         }
     </style>
