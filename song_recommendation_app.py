@@ -221,7 +221,7 @@ def display_recommendations(spotify_df, positive_prompt):
     if create_button:
         create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
         
-def spotify_redirect(sp_oauth):
+def spotify_redirect(sp_oauth, redirect_uri):
     st.session_state.checkbox = True
     token_info = sp_oauth.get_access_token(redirected_url)
     if token_info:
@@ -243,7 +243,7 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
     sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
     auth_url = sp_oauth.get_authorize_url()
     st.markdown(f"[Login with Spotify]({auth_url})")
-    redirected_url = st.text_input("Enter the redirected URL after login:", on_change=spotify_redirect(sp_oauth))
+    redirected_url = st.text_input("Enter the redirected URL after login:", on_change=spotify_redirect(sp_oauth, redirect_uri))
     
     
 
