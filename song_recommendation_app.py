@@ -73,11 +73,7 @@ def normalize_document(doc):
 def generate_recommendations(positive_prompt, negative_prompt, n):
 
     st.markdown("# Spotify Song Recommendations")
-    st.write(
-        """
-        Here are the songs that best match your prompt
-        """
-    )
+    st.text("Here are the songs that best match your prompt")
 
     progress_text = "Fetching Songs. Please wait."
     my_bar = st.progress(0, text=progress_text)
@@ -154,7 +150,7 @@ def display_recommendations(spotify_df):
         }
 
         .stAudio {
-            height: 200px !important;
+            height: 190px !important;
         }
     </style>
     '''
