@@ -175,8 +175,6 @@ def display_recommendations(spotify_df):
     def update_include():
         spotify_df['include'] = include
         st.session_state.checkbox = True
-
-    username_col, create_col = st.columns([3,1])
     
     with st.form(key='my_form'):
         for j in range(0, len(spotify_df)):
@@ -185,10 +183,8 @@ def display_recommendations(spotify_df):
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
             include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 6], label_visibility="collapsed")
-        with username_col:
-            username = st.text_input('Spotify Username')
-        with create_col:
-            st.form_submit_button(label='Create Playlist', on_click=update_include())
+        username = st.text_input('Spotify Username')
+        st.form_submit_button(label='Create Playlist', on_click=update_include())
     #st.stop()
 
     ##### Option using a container #####
