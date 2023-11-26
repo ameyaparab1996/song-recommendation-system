@@ -228,7 +228,7 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
     #sp = authenticate_spotify('playlist-modify-public')
     cid = '551b554ed7e14fafa21c5118bbba81fe'
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-    redirect_uri='https://song-recommendation-system.streamlit.app/'
+    redirect_uri='http://localhost:8080'
 
     sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
     auth_url = sp_oauth.get_authorize_url()
