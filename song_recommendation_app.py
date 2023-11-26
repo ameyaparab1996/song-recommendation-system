@@ -147,9 +147,10 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 def display_recommendations(spotify_df):
     css = '''
     <style>
-        .stMarkdown p {
+        .stMarkdown p, .stCheckbox {
             height: 200px !important;
             padding-top: 60px !important;
+            align: center !important;
         }
 
         .stAudio {
@@ -174,9 +175,9 @@ def display_recommendations(spotify_df):
     st.write(css, unsafe_allow_html=True)
     album_image_col, track_name_col, artists_col, preview_col, playlist_col = st.columns([1,1,1,3,1])
     album_image_col.subheader("Album Cover", divider='green')
-    track_name_col.subheader("Track", divider='green')
-    artists_col.subheader("Artists", divider='green')
-    preview_col.subheader("Preview", divider='green')
+    track_name_col.subheader("Track       ", divider='green')
+    artists_col.subheader("Artists       ", divider='green')
+    preview_col.subheader("Preview       ", divider='green')
     playlist_col.subheader("Add to Playlist", divider='green')
     
     include = []
@@ -187,7 +188,7 @@ def display_recommendations(spotify_df):
         track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
         artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
         preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-        include.append(playlist_col.checkbox("",value=True))
+        include.append(playlist_col.checkbox("",key=j,value=True))
 
     spotify_df['include'] = include
     return spotify_df[spotify_df['include']]
