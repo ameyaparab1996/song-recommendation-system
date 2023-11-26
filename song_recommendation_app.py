@@ -145,6 +145,7 @@ def display_recommendations(spotify_df):
             align-items: center !important;
             justify-content: center !important;
             height: 125px !important;
+            padding-bottom: 20px !important;
         }
 
         h3 {
