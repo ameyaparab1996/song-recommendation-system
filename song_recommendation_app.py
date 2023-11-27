@@ -234,11 +234,13 @@ def display_recommendations(spotify_df, positive_prompt):
                 include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
             st.session_state.username = st.text_input('Spotify Username', value = st.session_state.username ,help="To find your username go to Settings and privacy > Account", on_change=spotify_login())
             st.session_state.playlist_name = st.text_input('Playlist Name', value = st.session_state.playlist_name, help="Give a name to your playlist which will appear in your library")
+            logger.info("before submit" + str(st.session_state.create))
             create_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
             st.write(create_button)
     
     if st.session_state.create:
         #create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
+        logger.info(st.session_state.create)
         spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
     
     st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
