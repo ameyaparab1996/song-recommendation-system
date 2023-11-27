@@ -223,7 +223,7 @@ def display_recommendations(spotify_df, positive_prompt):
 
             
         playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
-        create_button = st.form_submit_button(label='Create Playlist', on_click=update_include())
+        create_button = st.form_submit_button(label='Create Playlist', on_click=spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt))
 
     st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
         
