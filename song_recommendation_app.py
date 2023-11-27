@@ -221,7 +221,7 @@ def display_recommendations(spotify_df, positive_prompt):
             include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
         username = st.text_input('Spotify Username', help="To find your username go to Settings and privacy > Account")
         if username != "":
-            spotify_logic()
+            spotify_login()
         playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
         create_button = st.form_submit_button(label='Create Playlist')
         if create_button:
