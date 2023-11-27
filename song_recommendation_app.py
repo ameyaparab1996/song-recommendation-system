@@ -249,6 +249,7 @@ def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_nam
     playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
     playlist_id = playlist_info['id']
     sp.playlist_add_items(playlist_id, track_uri)
+    st.write("Created")
     st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
     #else:
         #st.error("Failed to authenticate. Please try again.")
