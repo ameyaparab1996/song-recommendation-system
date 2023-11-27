@@ -62,7 +62,8 @@ def authenticate_spotify(auth_scope):
                                    redirect_uri='http://localhost:8080',
                                    scope=auth_scope,
                                    open_browser=False)
-        return spotipy.Spotify(auth_manager = auth_manager)
+        #return spotipy.Spotify(auth_manager = auth_manager)
+        return auth_manager
     else:
         return spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 
@@ -210,7 +211,7 @@ def display_recommendations(spotify_df, positive_prompt):
         secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
         redirect_uri='http://localhost:8080'
     
-        st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
+        st.session_state.sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
         auth_url = st.session_state.sp_oauth.get_authorize_url()
         st.markdown(f"[Login with Spotify]({auth_url})")
         st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
@@ -240,9 +241,10 @@ def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_nam
     #if token_info:
         #sp = spotipy.Spotify(auth=token_info["access_token"])
         #st.success("Successfully authenticated with Spotify!")
-    playlist_info = sp_oauth.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
+    sp = spotipy.Spotify(sp_oauth)
+    playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
     playlist_id = playlist_info['id']
-    sp_oauth.playlist_add_items(playlist_id, track_uri)
+    sp.playlist_add_items(playlist_id, track_uri)
     st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
     #else:
         #st.error("Failed to authenticate. Please try again.")
@@ -253,7 +255,7 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
     redirect_uri='http://localhost:8080'
 
-    sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
+    sp_oauth = authenticate_spotify('playlist-modify-public')
     auth_url = sp_oauth.get_authorize_url()
     st.markdown(f"[Login with Spotify]({auth_url})")
     with st.form(key='authentication_form'):
