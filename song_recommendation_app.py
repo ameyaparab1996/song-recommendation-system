@@ -61,7 +61,7 @@ def authenticate_spotify(auth_scope):
                                    client_secret=secret,
                                    redirect_uri='http://localhost:8092',
                                    scope=auth_scope,
-                                   open_browser=False)
+                                   open_browser=True)
         #return spotipy.Spotify(auth_manager = auth_manager)
         return auth_manager
     else:
