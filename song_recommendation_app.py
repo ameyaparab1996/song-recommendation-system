@@ -247,15 +247,6 @@ def display_recommendations(spotify_df, positive_prompt):
         auth_url = st.session_state.sp_oauth.get_authorize_url()
         st.markdown(f"[Login with Spotify]({auth_url})")
 
-    def before_submit():
-        if 'playlist_form' in st.session_state:
-            if st.session_state.my_form:
-                st.session_state.username = st.session_state.playlist_form.username
-                st.session_state.redirected_url = st.session_state.playlist_form.redirected_url
-                st.session_state.playlist_name = st.session_state.playlist_form.playlist_name
-                st.session_state.create = True
-        logger.info("after submit" + str(st.session_state.username))
-
     if st.session_state.create == False:
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
         with st.form(key='playlist_form'):
@@ -271,14 +262,25 @@ def display_recommendations(spotify_df, positive_prompt):
             redirected_url = st.text_input("Enter the redirected URL after login:")
             playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
             logger.info("before submit" + str(st.session_state.create))
-            submit_button = st.form_submit_button(label='Create Playlist')
+            submit_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
             if submit_button :
                 before_submit()
-    
+
     else:
         #create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
         logger.info(st.session_state.create)
         spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
+
+    def before_submit():
+        logger.info(st.session_state.playlist_form.username)
+        if 'playlist_form' in st.session_state:
+            if st.session_state.my_form:
+                st.session_state.username = st.session_state.playlist_form.username
+                st.session_state.redirected_url = st.session_state.playlist_form.redirected_url
+                st.session_state.playlist_name = st.session_state.playlist_form.playlist_name
+                st.session_state.create = True
+        logger.info("after submit" + str(st.session_state.username))
+        st.session_state.create = True
     
     st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
 
