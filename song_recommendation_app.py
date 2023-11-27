@@ -230,9 +230,9 @@ def display_recommendations(spotify_df, positive_prompt):
         create_button = st.form_submit_button(label='Create Playlist')
         st.write(create_button)
     
-    if create_button:
+        if create_button:
         #create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
-        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
+            spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
     
     st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
         
