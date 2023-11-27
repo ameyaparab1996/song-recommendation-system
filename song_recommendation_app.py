@@ -238,7 +238,7 @@ def display_recommendations(spotify_df, positive_prompt):
             create_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
             st.write(create_button)
     
-    if st.session_state.create:
+    else:
         #create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
         logger.info(st.session_state.create)
         spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
@@ -251,7 +251,7 @@ def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_nam
     code = redirected_url.split("code=", 1)[-1]
     logger.info(code)
     token_info = sp_oauth.get_access_token(code)
-    logger.info(token_info)
+    logger.info("got token" + token_info)
     if token_info:
         sp = spotipy.Spotify(auth=token_info["access_token"])
         logger.info("Successfully authenticated with Spotify!")
