@@ -251,6 +251,7 @@ def display_recommendations(spotify_df, positive_prompt):
         st.session_state.create = True
 
     if st.session_state.create == False:
+        st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
         with st.form(key='playlist_form'):
             for j in range(0, len(spotify_df)):
                 album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
@@ -258,12 +259,15 @@ def display_recommendations(spotify_df, positive_prompt):
                 artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
                 preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
                 include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
-            st.session_state.username = st.text_input('Spotify Username', value = st.session_state.username ,help="To find your username go to Settings and privacy > Account", on_change=spotify_login())
-            st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:", on_change=spotify_login())
+            st.session_state.username = st.text_input('Spotify Username', value = st.session_state.username ,help="To find your username go to Settings and privacy > Account")
+            auth_url = st.session_state.sp_oauth.get_authorize_url()
+            st.markdown(f"[Login with Spotify]({auth_url})")
+            st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
             st.session_state.playlist_name = st.text_input('Playlist Name', value = st.session_state.playlist_name, help="Give a name to your playlist which will appear in your library")
             logger.info("before submit" + str(st.session_state.create))
-            create_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
-            st.write(create_button)
+            create_button = st.form_submit_button(label='Create Playlist')
+            if create_button:
+                before_submit()
     
     else:
         #create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
