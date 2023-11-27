@@ -257,6 +257,7 @@ def display_recommendations(spotify_df, positive_prompt):
             track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
+            logger.info("before checkbox" + str(st.session_state.create))
             include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change=update_include())
 
         st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
