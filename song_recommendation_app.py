@@ -281,7 +281,7 @@ if "playlist_name" not in st.session_state:
     st.session_state.playlist_name = ""
 
 if 'redirected_uri' not in st.session_state:
-    st.session_state.redirected_uri = "http://localhost:8093"
+    st.session_state.redirected_uri = "http://localhost:8094"
 
 if 'sp_oauth' not in st.session_state:
     st.session_state.sp_oauth = ""
