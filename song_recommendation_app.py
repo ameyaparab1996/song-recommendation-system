@@ -156,11 +156,12 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                 my_bar.progress(int(len(spotify_df)*100/n), text=progress_text)
             if(len(spotify_df) == n):
                 break
-
+                
+    st.session_state.spotify_df = spotify_df
     if st.session_state.checkbox == False and st.session_state.create == False:
         my_bar.empty()
 
-    display_recommendations(spotify_df, positive_prompt)
+    display_recommendations(st.session_state.spotify_df, positive_prompt)
 
 
 def display_recommendations(spotify_df, positive_prompt):
@@ -268,6 +269,9 @@ if "checkbox" not in st.session_state:
 
 if "create" not in st.session_state:
     st.session_state.create = False
+
+if "spotify_df" not in st.session_state:
+    st.session_state.spotify_df = ""
 
 if "username" not in st.session_state:
     st.session_state.username = ""
