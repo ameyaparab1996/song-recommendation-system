@@ -248,6 +248,9 @@ def display_recommendations(spotify_df, positive_prompt):
         st.markdown(f"[Login with Spotify]({auth_url})")
 
     def before_submit():
+        st.session_state.username = st.session_state.playlist_form.username
+        st.session_state.redirected_url = st.session_state.playlist_form.redirected_url
+        st.session_state.playlist_name = st.session_state.playlist_form.playlist_name
         st.session_state.create = True
 
     if st.session_state.create == False:
@@ -259,11 +262,11 @@ def display_recommendations(spotify_df, positive_prompt):
                 artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
                 preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
                 include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
-            st.session_state.username = st.text_input('Spotify Username', value = st.session_state.username ,help="To find your username go to Settings and privacy > Account")
+            username = st.text_input('Spotify Username', value = st.session_state.username ,help="To find your username go to Settings and privacy > Account")
             auth_url = st.session_state.sp_oauth.get_authorize_url()
             st.markdown(f"[Login with Spotify]({auth_url})")
-            st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:", key=redirect)
-            st.session_state.playlist_name = st.text_input('Playlist Name', value = st.session_state.playlist_name, help="Give a name to your playlist which will appear in your library")
+            redirected_url = st.text_input("Enter the redirected URL after login:")
+            playlist_name = st.text_input('Playlist Name', value = st.session_state.playlist_name, help="Give a name to your playlist which will appear in your library")
             logger.info("before submit" + str(st.session_state.create))
             create_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
             if create_button:
