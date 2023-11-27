@@ -59,7 +59,7 @@ def authenticate_spotify(auth_scope):
     if auth_scope == 'playlist-modify-public':
         auth_manager= SpotifyOAuth(client_id=cid,
                                    client_secret=secret,
-                                   redirect_uri='http://localhost:8092',
+                                   redirect_uri='http://localhost:8093',
                                    scope=auth_scope,
                                    open_browser=True)
         #return spotipy.Spotify(auth_manager = auth_manager)
@@ -254,7 +254,7 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
     #sp = authenticate_spotify('playlist-modify-public')
     cid = '551b554ed7e14fafa21c5118bbba81fe'
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-    redirect_uri='http://localhost:8092'
+    redirect_uri='http://localhost:8093'
 
     sp_oauth = authenticate_spotify('playlist-modify-public')
     auth_url = sp_oauth.get_authorize_url()
@@ -281,7 +281,7 @@ if "playlist_name" not in st.session_state:
     st.session_state.playlist_name = ""
 
 if 'redirected_uri' not in st.session_state:
-    st.session_state.redirected_uri = "http://localhost:8092"
+    st.session_state.redirected_uri = "http://localhost:8093"
 
 if 'sp_oauth' not in st.session_state:
     st.session_state.sp_oauth = ""
