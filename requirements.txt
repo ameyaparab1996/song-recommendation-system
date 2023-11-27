@@ -3,5 +3,4 @@ nltk
 regex
 spotipy
 gensim
-pages
-generate_recommendations
+logging
