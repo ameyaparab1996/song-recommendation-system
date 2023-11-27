@@ -305,8 +305,8 @@ if "username" not in st.session_state:
 if "playlist_name" not in st.session_state:
     st.session_state.playlist_name = ""
 
-if 'redirected_uri' not in st.session_state:
-    st.session_state.redirected_uri = "https://song-recommendation-system.streamlit.app/"
+if 'redirected_url' not in st.session_state:
+    st.session_state.redirected_url = "https://song-recommendation-system.streamlit.app/"
 
 if 'sp_oauth' not in st.session_state:
     st.session_state.sp_oauth = ""
