@@ -91,9 +91,10 @@ def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_nam
             sp.playlist_add_items(playlist_id, track_uri)
             logger.info("This message will be logged.")
             #st.write("Created")
+            intro()
             st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
-            st.session_state.checkbox = False
-            st.session_state.create = False
+            for key in st.session_state.keys():
+                del st.session_state[key]
         else:
             st.error("Failed to authenticate. Please try again.")
             
@@ -254,24 +255,27 @@ def display_recommendations(spotify_df, positive_prompt):
         
     #if st.session_state.create == False:
     st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
-    with st.form(key='playlist_form'):
-        if st.session_state.create == False:
-            for j in range(0, len(spotify_df)):
-                album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
-                track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
-                artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
-                preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-                include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change=update_include())
-        st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
-        auth_url = st.session_state.sp_oauth.get_authorize_url()
-        st.markdown(f"[Login with Spotify]({auth_url})")
-        st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
-        st.session_state.playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
-        logger.info("before submit" + st.session_state.playlist_name)
-        st.session_state.submit_button = st.form_submit_button(label='Create Playlist', on_click=before_submit(st.session_state.username))
-        if st.session_state.submit_button:
-            logger.info("inside form" + str(st.session_state.create))
-            #spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
+
+    if st.session_state.create == False:
+        for j in range(0, len(spotify_df)):
+            album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
+            track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
+            artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
+            preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
+            include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change=update_include())
+    
+        with st.form(key='playlist_form'):
+            
+            st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
+            auth_url = st.session_state.sp_oauth.get_authorize_url()
+            st.markdown(f"[Login with Spotify]({auth_url})")
+            st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
+            st.session_state.playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
+            logger.info("before submit" + st.session_state.playlist_name)
+            st.session_state.submit_button = st.form_submit_button(label='Create Playlist', on_click=before_submit(st.session_state.username))
+            if st.session_state.submit_button:
+                logger.info("inside form" + str(st.session_state.create))
+                #spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
     
     if st.session_state.submit_button or st.session_state.create:
         logger.info("outside form" + str(st.session_state.create))
