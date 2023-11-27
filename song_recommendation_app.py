@@ -249,6 +249,7 @@ def display_recommendations(spotify_df, positive_prompt):
 
     def before_submit():
         logger.info(st.session_state.playlist_form.username)
+        logger.info(st.session_state.create)
         if 'playlist_form' in st.session_state:
             if st.session_state.my_form:
                 st.session_state.username = st.session_state.playlist_form.username
@@ -257,6 +258,7 @@ def display_recommendations(spotify_df, positive_prompt):
                 st.session_state.create = True
         logger.info("after submit" + str(st.session_state.username))
         st.session_state.create = True
+        logger.info(st.session_state.create)
         
     if st.session_state.create == False:
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
@@ -273,8 +275,8 @@ def display_recommendations(spotify_df, positive_prompt):
             redirected_url = st.text_input("Enter the redirected URL after login:")
             playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
             logger.info("before submit" + str(st.session_state.create))
-            submit_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
-            if submit_button :
+        #submit_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
+            if st.form_submit_button(label='Create Playlist', type= "Primary", on_click=before_submit()) :
                 before_submit()
 
     else:
@@ -285,20 +287,6 @@ def display_recommendations(spotify_df, positive_prompt):
     
     
     st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
-
-def create_playlist(track_uri, username, playlist_name, playlist_description):
-    #sp = authenticate_spotify('playlist-modify-public')
-    cid = '551b554ed7e14fafa21c5118bbba81fe'
-    secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-    redirect_uri='https://song-recommendation-system.streamlit.app/'
-
-    sp_oauth = authenticate_spotify('playlist-modify-public')
-    auth_url = sp_oauth.get_authorize_url()
-    st.markdown(f"[Login with Spotify]({auth_url})")
-    with st.form(key='authentication_form'):
-        redirected_url = st.text_input("Enter the redirected URL after login:")
-        auth_button = st.form_submit_button(label='Add to Playlist', on_change=spotify_redirect(sp_oauth, redirected_url))
-    
     
 
 if "checkbox" not in st.session_state:
