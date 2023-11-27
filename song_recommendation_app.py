@@ -253,7 +253,7 @@ def display_recommendations(spotify_df, positive_prompt):
         st.session_state.create = True
         logger.info("after submit" + str(st.session_state.create))
         
-    if st.session_state.create == False and st.session_state.checkbox == True:
+    if st.session_state.create == False:
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
         with st.form(key='playlist_form'):
             for j in range(0, len(spotify_df)):
