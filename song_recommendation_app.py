@@ -59,7 +59,7 @@ def authenticate_spotify(auth_scope):
     if auth_scope == 'playlist-modify-public':
         auth_manager= SpotifyOAuth(client_id=cid,
                                    client_secret=secret,
-                                   redirect_uri='http://localhost:8080',
+                                   redirect_uri='http://localhost:8089',
                                    scope=auth_scope,
                                    open_browser=False)
         #return spotipy.Spotify(auth_manager = auth_manager)
@@ -206,11 +206,7 @@ def display_recommendations(spotify_df, positive_prompt):
         spotify_df['include'] = include
         st.session_state.checkbox = True
 
-    def spotify_login():
-        cid = '551b554ed7e14fafa21c5118bbba81fe'
-        secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-        redirect_uri='http://localhost:8080'
-    
+    def spotify_login():    
         st.session_state.sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
         auth_url = st.session_state.sp_oauth.get_authorize_url()
         st.markdown(f"[Login with Spotify]({auth_url})")
