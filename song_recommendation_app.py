@@ -168,6 +168,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         display_recommendations(st.session_state.spotify_df, positive_prompt)
 
     def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
+        logger.info("inside spotify redirect")
         code = redirected_url.split("code=", 1)[-1]
         logger.info(code)
         token_info = sp_oauth.get_access_token(code)
