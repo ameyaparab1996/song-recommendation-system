@@ -250,7 +250,7 @@ def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_nam
     token_info = sp_oauth.get_access_token(code)
     if token_info:
         sp = spotipy.Spotify(auth=token_info["access_token"])
-        st.success("Successfully authenticated with Spotify!")
+        logger.info("Successfully authenticated with Spotify!")
     #sp = spotipy.Spotify(auth_manager = sp_oauth)
         playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
         playlist_id = playlist_info['id']
