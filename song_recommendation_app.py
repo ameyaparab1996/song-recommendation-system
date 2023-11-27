@@ -247,35 +247,31 @@ def display_recommendations(spotify_df, positive_prompt):
         auth_url = st.session_state.sp_oauth.get_authorize_url()
         st.markdown(f"[Login with Spotify]({auth_url})")
 
-    def before_submit():
-        logger.info(st.session_state.create)
-        logger.info("after submit" + str(st.session_state.username))
+    def before_submit(username, redirected_url, playlist_name):
+        logger.info(username)
         st.session_state.create = True
-        logger.info(st.session_state.create)
+        logger.info("after submit" + str(st.session_state.create))
         
     if st.session_state.create == False:
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
-        #with st.form(key='playlist_form'):
-        for j in range(0, len(spotify_df)):
+        with st.form(key='playlist_form'):
+            for j in range(0, len(spotify_df)):
                 album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
                 track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
                 artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
                 preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-                include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change=update_include())
-        st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
-        auth_url = st.session_state.sp_oauth.get_authorize_url()
-        st.markdown(f"[Login with Spotify]({auth_url})")
-        st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
-        st.session_state.playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
-        logger.info("before submit" + str(st.session_state.create))
-        #submit_button = st.form_submit_button(label='Create Playlist', type="primary")
-        if st.button(label='Create Playlist', type="primary"):
-                before_submit()
-
-    else:
-        #create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
+                include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
+            st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
+            auth_url = st.session_state.sp_oauth.get_authorize_url()
+            st.markdown(f"[Login with Spotify]({auth_url})")
+            st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
+            st.session_state.playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
+            logger.info("before submit" + str(st.session_state.create))
+            st.session_state.submit_button = st.form_submit_button(label='Create Playlist', on_click=before_submit(username, redirected_url, playlist_name))
+    
+    if st.session_state.submit_button or st.session_state.create:
         logger.info(st.session_state.create)
-        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
+        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
 
     
     
@@ -300,6 +296,9 @@ if "username" not in st.session_state:
 if "playlist_name" not in st.session_state:
     st.session_state.playlist_name = ""
 
+if "submit_button" not in st.session_state:
+    st.session_state.submit_button = False
+
 if 'redirected_url' not in st.session_state:
     st.session_state.redirected_url = "https://song-recommendation-system.streamlit.app/"
 
@@ -316,4 +315,3 @@ if st.sidebar.button("Generate Playlist", type="primary") or st.session_state.ch
     generate_recommendations(positive_prompt, negative_prompt, n)
 else:
     intro()
-    
