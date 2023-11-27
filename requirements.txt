@@ -3,4 +3,3 @@ nltk
 regex
 spotipy
 gensim
-logging
