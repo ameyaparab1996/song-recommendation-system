@@ -157,7 +157,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
             if(len(spotify_df) == n):
                 break
 
-    if st.session_state.checkbox == False and st.session_state.create == False::
+    if st.session_state.checkbox == False and st.session_state.create == False:
         my_bar.empty()
 
     display_recommendations(spotify_df, positive_prompt)
