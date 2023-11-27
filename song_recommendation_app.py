@@ -249,7 +249,7 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
     #sp = authenticate_spotify('playlist-modify-public')
     cid = '551b554ed7e14fafa21c5118bbba81fe'
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-    redirect_uri='http://localhost:8080'
+    redirect_uri='http://localhost:8089'
 
     sp_oauth = authenticate_spotify('playlist-modify-public')
     auth_url = sp_oauth.get_authorize_url()
@@ -264,7 +264,7 @@ if "checkbox" not in st.session_state:
     st.session_state.checkbox = False
 
 if 'redirected_uri' not in st.session_state:
-    st.session_state.redirected_uri = "http://localhost:8080"
+    st.session_state.redirected_uri = "http://localhost:8089"
 
 if 'sp_oauth' not in st.session_state:
     st.session_state.sp_oauth = ""
