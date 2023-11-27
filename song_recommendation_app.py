@@ -252,7 +252,7 @@ def display_recommendations(spotify_df, positive_prompt):
         st.session_state.redirected_url = st.session_state.playlist_form.redirected_url
         st.session_state.playlist_name = st.session_state.playlist_form.playlist_name
         st.session_state.create = True
-         logger.info("after submit" + str(st.session_state.username))
+        logger.info("after submit" + str(st.session_state.username))
 
     if st.session_state.create == False:
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
