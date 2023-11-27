@@ -3,6 +3,7 @@ import pandas as pd
 import nltk
 import re
 import spotipy
+import logging     
 import gensim
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
@@ -12,6 +13,9 @@ from spotipy.oauth2 import SpotifyClientCredentials
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 st.set_page_config(
     page_title="Song Recommender",
@@ -250,6 +254,7 @@ def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_nam
     playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
     playlist_id = playlist_info['id']
     sp.playlist_add_items(playlist_id, track_uri)
+    logger.info("This message will be logged.")
     st.write("Created")
     st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
     st.session_state.checkbox = False
