@@ -9,6 +9,7 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.tokenize import word_tokenize
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
+from urllib.parse import urlparse, parse_qs
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -169,8 +170,11 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
     def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
         logger.info("inside spotify redirect")
-        logger.info(redirected_url.split("code=", 1))
-        code = redirected_url.split("code=", 1)[-1]
+
+        parsed_url = urlparse(redirected_url)
+        query_params = parse_qs(parsed_url.query)
+        code = query_params.get('code', [None])[0]
+
         logger.info(code)
         token_info = sp_oauth.get_access_token(code)
         logger.info("got token" + token_info)
