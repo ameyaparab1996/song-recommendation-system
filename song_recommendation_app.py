@@ -247,7 +247,9 @@ def display_recommendations(spotify_df, positive_prompt):
         
 def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
     code = redirected_url.split("code=", 1)[-1]
+    logger.info(code)
     token_info = sp_oauth.get_access_token(code)
+    logger.info(token_info)
     if token_info:
         sp = spotipy.Spotify(auth=token_info["access_token"])
         logger.info("Successfully authenticated with Spotify!")
