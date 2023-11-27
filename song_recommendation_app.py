@@ -271,7 +271,7 @@ def display_recommendations(spotify_df, positive_prompt):
             redirected_url = st.text_input("Enter the redirected URL after login:")
             playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
             logger.info("before submit" + str(st.session_state.create))
-            submit_button = st.form_submit_button(label='Create Playlist', on_click = before_submit())
+            submit_button = st.form_submit_button(label='Create Playlist')
             if submit_button :
                 before_submit()
     
