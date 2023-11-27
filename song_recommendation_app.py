@@ -138,8 +138,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     if st.session_state.checkbox == False and st.session_state.create == False:
         progress_text = "Fetching Songs 🎶. Please wait ⌛."
         my_bar = st.progress(0, text=progress_text)
-
-    if st.session_state.create == False:
+        
         model = Doc2Vec.load("data/d2v_test.model")
         positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
         negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
@@ -188,15 +187,9 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                 break
                 
         st.session_state.spotify_df = spotify_df
-        
-    if st.session_state.checkbox == False and st.session_state.create == False:
         my_bar.empty()
     
     display_recommendations(st.session_state.spotify_df, positive_prompt)
-        
-    if st.session_state.create:
-        logger.info("create status in generate" + str(st.session_state.create))
-        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(st.session_state.spotify_df.loc[st.session_state.spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
 
 
 def display_recommendations(spotify_df, positive_prompt):
@@ -235,10 +228,12 @@ def display_recommendations(spotify_df, positive_prompt):
     artists_col.subheader("Artists       ", divider='green')
     preview_col.subheader("Preview       ", divider='green')
     playlist_col.subheader("Add to Playlist", divider='green')
-    
-    include = [True] * (len(spotify_df))
-    spotify_df['include'] = [True] * (len(spotify_df))
-    
+
+    if st.session_state.checkbox == False:
+        include = [True] * (len(spotify_df))
+        spotify_df['include'] = [True] * (len(spotify_df))
+        st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
+        
     def update_include():
         spotify_df['include'] = include
         st.session_state.checkbox = True
@@ -254,7 +249,7 @@ def display_recommendations(spotify_df, positive_prompt):
         logger.info("after submit" + str(st.session_state.create))
         
     #if st.session_state.create == False:
-    st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
+    
 
     if st.session_state.create == False:
         for j in range(0, len(spotify_df)):
@@ -263,7 +258,9 @@ def display_recommendations(spotify_df, positive_prompt):
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
             include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change=update_include())
-    
+
+        st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
+
         with st.form(key='playlist_form'):
             
             st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
@@ -277,13 +274,9 @@ def display_recommendations(spotify_df, positive_prompt):
                 logger.info("inside form" + str(st.session_state.create))
                 #spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
     
-    if st.session_state.submit_button or st.session_state.create:
+    if st.session_state.create:
         logger.info("outside form" + str(st.session_state.create))
         spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
-
-    
-    
-    st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
     
 
 if "checkbox" not in st.session_state:
