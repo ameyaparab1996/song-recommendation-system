@@ -72,7 +72,31 @@ def authenticate_spotify(auth_scope):
     else:
         return spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 
-  
+def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
+        logger.info("inside spotify redirect")
+        logger.info(username + playlist_name)
+        parsed_url = urlparse(redirected_url)
+        query_params = parse_qs(parsed_url.query)
+        code = query_params.get('code', [None])[0]
+
+        logger.info(code)
+        token_info = sp_oauth.get_access_token(code)
+        logger.info("got token" + token_info)
+        if token_info:
+            sp = spotipy.Spotify(auth=token_info["access_token"])
+            logger.info("Successfully authenticated with Spotify!")
+        #sp = spotipy.Spotify(auth_manager = sp_oauth)
+            playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
+            playlist_id = playlist_info['id']
+            sp.playlist_add_items(playlist_id, track_uri)
+            logger.info("This message will be logged.")
+            #st.write("Created")
+            st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
+            st.session_state.checkbox = False
+            st.session_state.create = False
+        else:
+            st.error("Failed to authenticate. Please try again.")
+            
 def get_recommendations(songs_df, similar_doc):
     
   recommendation = pd.DataFrame(columns = ['id','title','tag','artist','score'])
@@ -168,31 +192,6 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         my_bar.empty()
     
     display_recommendations(st.session_state.spotify_df, positive_prompt)
-
-    def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
-        logger.info("inside spotify redirect")
-        logger.info(username + playlist_name)
-        parsed_url = urlparse(redirected_url)
-        query_params = parse_qs(parsed_url.query)
-        code = query_params.get('code', [None])[0]
-
-        logger.info(code)
-        token_info = sp_oauth.get_access_token(code)
-        logger.info("got token" + token_info)
-        if token_info:
-            sp = spotipy.Spotify(auth=token_info["access_token"])
-            logger.info("Successfully authenticated with Spotify!")
-        #sp = spotipy.Spotify(auth_manager = sp_oauth)
-            playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
-            playlist_id = playlist_info['id']
-            sp.playlist_add_items(playlist_id, track_uri)
-            logger.info("This message will be logged.")
-            #st.write("Created")
-            st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
-            st.session_state.checkbox = False
-            st.session_state.create = False
-        else:
-            st.error("Failed to authenticate. Please try again.")
         
     if st.session_state.create:
         logger.info("create status in generate" + str(st.session_state.create))
@@ -270,7 +269,7 @@ def display_recommendations(spotify_df, positive_prompt):
             logger.info("before submit" + st.session_state.playlist_name)
             st.session_state.submit_button = st.form_submit_button(label='Create Playlist', on_click=before_submit(st.session_state.username))
             if st.session_state.submit_button or st.session_state.create:
-                logger.info("inside form" + st.session_state.create)
+                logger.info("inside form" + str(st.session_state.create))
                 spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
     
     if st.session_state.submit_button or st.session_state.create:
