@@ -105,40 +105,29 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     st.markdown("# Spotify Song Recommendations")
     st.markdown("###### Here are the songs that best match your prompt:")
 
-    if st.session_state.checkbox == False:
+    if st.session_state.checkbox == False and st.session_state.create == False:
         progress_text = "Fetching Songs 🎶. Please wait ⌛."
         my_bar = st.progress(0, text=progress_text)
+
+    if st.session_state.create == False:
+        model = Doc2Vec.load("data/d2v_test.model")
+        positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
+        negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
+        similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
         
-    model = Doc2Vec.load("data/d2v_test.model")
-    positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
-    negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
-    similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
-    
-    sampled_df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
-    recommendations_df = get_recommendations(sampled_df, similar_doc)
-    
-    sp = authenticate_spotify('fetch_songs')
-    
-    spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url', 'track_uri'])
-    
-    for i in range(0,len(recommendations_df)):
-        track_name = recommendations_df.iloc[i, 1]
-        artist_name = recommendations_df.iloc[i, 3]
-        results = sp.search(q=f'track:{track_name} artist:{artist_name}', type='track', limit=1)
-        if len(results['tracks']['items']) > 0:
-            track = results['tracks']['items'][0]
-            spotify_data = {'track_id': track['id'],
-                            'track_name': track['name'],
-                            'album_name': track['album']['name'],
-                            'artists': [artist['name'] for artist in track['artists'] if 'name' in artist],
-                            'album_image': track['album']['images'][0]['url'],
-                            'preview_url': track['preview_url'],
-                            'track_uri': track['uri']}
-            spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
-        elif len(results['tracks']['items']) == 0:
-            results_new = sp.search(q=f'track:{track_name}', type='track', limit=1)
-            if len(results_new['tracks']['items']) > 0 and re.sub(r'[^a-zA-Z0-9\s]', '', results_new['tracks']['items'][0]['name'].lower()) == re.sub(r'[^a-zA-Z0-9\s]', '', recommendations_df.iloc[i,1].lower()):
-                track = results_new['tracks']['items'][0]
+        sampled_df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
+        recommendations_df = get_recommendations(sampled_df, similar_doc)
+        
+        sp = authenticate_spotify('fetch_songs')
+        
+        spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url', 'track_uri'])
+        
+        for i in range(0,len(recommendations_df)):
+            track_name = recommendations_df.iloc[i, 1]
+            artist_name = recommendations_df.iloc[i, 3]
+            results = sp.search(q=f'track:{track_name} artist:{artist_name}', type='track', limit=1)
+            if len(results['tracks']['items']) > 0:
+                track = results['tracks']['items'][0]
                 spotify_data = {'track_id': track['id'],
                                 'track_name': track['name'],
                                 'album_name': track['album']['name'],
@@ -147,16 +136,28 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                                 'preview_url': track['preview_url'],
                                 'track_uri': track['uri']}
                 spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
+            elif len(results['tracks']['items']) == 0:
+                results_new = sp.search(q=f'track:{track_name}', type='track', limit=1)
+                if len(results_new['tracks']['items']) > 0 and re.sub(r'[^a-zA-Z0-9\s]', '', results_new['tracks']['items'][0]['name'].lower()) == re.sub(r'[^a-zA-Z0-9\s]', '', recommendations_df.iloc[i,1].lower()):
+                    track = results_new['tracks']['items'][0]
+                    spotify_data = {'track_id': track['id'],
+                                    'track_name': track['name'],
+                                    'album_name': track['album']['name'],
+                                    'artists': [artist['name'] for artist in track['artists'] if 'name' in artist],
+                                    'album_image': track['album']['images'][0]['url'],
+                                    'preview_url': track['preview_url'],
+                                    'track_uri': track['uri']}
+                    spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
+                else:
+                    print(f"No track found with the name '{track_name}'")
             else:
                 print(f"No track found with the name '{track_name}'")
-        else:
-            print(f"No track found with the name '{track_name}'")
-        if st.session_state.checkbox == False:
-            my_bar.progress(int(len(spotify_df)*100/n), text=progress_text)
-        if(len(spotify_df) == n):
-            break
+            if st.session_state.checkbox == False:
+                my_bar.progress(int(len(spotify_df)*100/n), text=progress_text)
+            if(len(spotify_df) == n):
+                break
 
-    if st.session_state.checkbox == False:
+    if st.session_state.checkbox == False and st.session_state.create == False::
         my_bar.empty()
 
     display_recommendations(spotify_df, positive_prompt)
@@ -211,6 +212,9 @@ def display_recommendations(spotify_df, positive_prompt):
         auth_url = st.session_state.sp_oauth.get_authorize_url()
         st.markdown(f"[Login with Spotify]({auth_url})")
         st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
+
+    def before_submit():
+        st.session_state.create = True
     
     with st.form(key='playlist_form'):
         for j in range(0, len(spotify_df)):
@@ -219,12 +223,12 @@ def display_recommendations(spotify_df, positive_prompt):
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
             include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
-        username = st.text_input('Spotify Username', help="To find your username go to Settings and privacy > Account", on_change=spotify_login())
-        playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
-        create_button = st.form_submit_button(label='Create Playlist')
-        if create_button:
+        st.session_state.username = st.text_input('Spotify Username', value = st.session_state.username ,help="To find your username go to Settings and privacy > Account", on_change=spotify_login())
+        st.session_state.playlist_name = st.text_input('Playlist Name', value = st.session_state.playlist_name, help="Give a name to your playlist which will appear in your library")
+        create_button = st.form_submit_button(label='Create Playlist', on_change=before_submit())
+    if create_button:
         #create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
-            spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
+        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
     
     #st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
         
@@ -262,6 +266,15 @@ def create_playlist(track_uri, username, playlist_name, playlist_description):
 if "checkbox" not in st.session_state:
     st.session_state.checkbox = False
 
+if "create" not in st.session_state:
+    st.session_state.create = False
+
+if "username" not in st.session_state:
+    st.session_state.username = ""
+
+if "playlist_name" not in st.session_state:
+    st.session_state.playlist_name = ""
+
 if 'redirected_uri' not in st.session_state:
     st.session_state.redirected_uri = "http://localhost:8092"
 
@@ -272,7 +285,7 @@ st.sidebar.write("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for.")
 negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be.")
 n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
-if st.sidebar.button("Generate Playlist", type="primary") or st.session_state.checkbox:
+if st.sidebar.button("Generate Playlist", type="primary") or st.session_state.checkbox or st.session_state.create:
     generate_recommendations(positive_prompt, negative_prompt, n)
 else:
     intro()
