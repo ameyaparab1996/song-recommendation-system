@@ -171,7 +171,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
     def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
         logger.info("inside spotify redirect")
-        logger.info(st.session_state.username + st.session_state.playlist_name)
+        logger.info(username + playlist_name)
         parsed_url = urlparse(redirected_url)
         query_params = parse_qs(parsed_url.query)
         code = query_params.get('code', [None])[0]
@@ -274,7 +274,7 @@ def display_recommendations(spotify_df, positive_prompt):
                 spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
     
     if st.session_state.submit_button or st.session_state.create:
-        logger.info("outside form" + st.session_state.create)
+        logger.info("outside form" + str(st.session_state.create))
         spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
 
     
