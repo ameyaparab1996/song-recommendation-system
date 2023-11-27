@@ -248,35 +248,28 @@ def display_recommendations(spotify_df, positive_prompt):
         st.markdown(f"[Login with Spotify]({auth_url})")
 
     def before_submit():
-        logger.info(st.session_state.playlist_form.username)
         logger.info(st.session_state.create)
-        if 'playlist_form' in st.session_state:
-            if st.session_state.my_form:
-                st.session_state.username = st.session_state.playlist_form.username
-                st.session_state.redirected_url = st.session_state.playlist_form.redirected_url
-                st.session_state.playlist_name = st.session_state.playlist_form.playlist_name
-                st.session_state.create = True
         logger.info("after submit" + str(st.session_state.username))
         st.session_state.create = True
         logger.info(st.session_state.create)
         
     if st.session_state.create == False:
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
-        with st.form(key='playlist_form'):
-            for j in range(0, len(spotify_df)):
+        #with st.form(key='playlist_form'):
+        for j in range(0, len(spotify_df)):
                 album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
                 track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
                 artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
                 preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
                 include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
-            username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
-            auth_url = st.session_state.sp_oauth.get_authorize_url()
-            st.markdown(f"[Login with Spotify]({auth_url})")
-            redirected_url = st.text_input("Enter the redirected URL after login:")
-            playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
-            logger.info("before submit" + str(st.session_state.create))
-            submit_button = st.form_submit_button(label='Create Playlist', type="primary")
-            if submit_button:
+        st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
+        auth_url = st.session_state.sp_oauth.get_authorize_url()
+        st.markdown(f"[Login with Spotify]({auth_url})")
+        st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
+        st.session_state.playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
+        logger.info("before submit" + str(st.session_state.create))
+        #submit_button = st.form_submit_button(label='Create Playlist', type="primary")
+        if st.button(label='Create Playlist', type="primary"):
                 before_submit()
 
     else:
