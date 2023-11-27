@@ -207,7 +207,7 @@ def display_recommendations(spotify_df, positive_prompt):
         st.session_state.checkbox = True
 
     def spotify_login():    
-        st.session_state.sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
+        st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
         auth_url = st.session_state.sp_oauth.get_authorize_url()
         st.markdown(f"[Login with Spotify]({auth_url})")
         st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
