@@ -217,22 +217,23 @@ def display_recommendations(spotify_df, positive_prompt):
 
     def before_submit():
         st.session_state.create = True
+
+    if st.session_state.create == False:
+        with st.form(key='playlist_form'):
+            for j in range(0, len(spotify_df)):
+                album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
+                track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
+                artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
+                preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
+                include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
+            st.session_state.username = st.text_input('Spotify Username', value = st.session_state.username ,help="To find your username go to Settings and privacy > Account", on_change=spotify_login())
+            st.session_state.playlist_name = st.text_input('Playlist Name', value = st.session_state.playlist_name, help="Give a name to your playlist which will appear in your library")
+            create_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
+            st.write(create_button)
     
-    with st.form(key='playlist_form'):
-        for j in range(0, len(spotify_df)):
-            album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
-            track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
-            artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
-            preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-            include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
-        st.session_state.username = st.text_input('Spotify Username', value = st.session_state.username ,help="To find your username go to Settings and privacy > Account", on_change=spotify_login())
-        st.session_state.playlist_name = st.text_input('Playlist Name', value = st.session_state.playlist_name, help="Give a name to your playlist which will appear in your library")
-        create_button = st.form_submit_button(label='Create Playlist')
-        st.write(create_button)
-    
-        if create_button:
+    if st.session_state.create:
         #create_playlist(list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), username, playlist_name, positive_prompt)
-            spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
+        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
     
     st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
         
