@@ -210,7 +210,7 @@ def display_recommendations(spotify_df, positive_prompt):
         secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
         redirect_uri='http://localhost:8080'
     
-        st.session_state.redirected_url.sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
+        st.session_state.sp_oauth = SpotifyOAuth(cid, secret, redirect_uri, scope='playlist-modify-public')
         auth_url = sp_oauth.get_authorize_url()
         st.markdown(f"[Login with Spotify]({auth_url})")
         st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
