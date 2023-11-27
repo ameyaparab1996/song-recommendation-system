@@ -168,6 +168,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         display_recommendations(st.session_state.spotify_df, positive_prompt)
 
     if st.session_state.create:
+        logger.info("create status in generate" + st.session_state.create)
         spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(st.session_state.spotify_df.loc[st.session_state.spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
 
 
