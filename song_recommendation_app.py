@@ -248,10 +248,12 @@ def display_recommendations(spotify_df, positive_prompt):
         st.markdown(f"[Login with Spotify]({auth_url})")
 
     def before_submit():
-        st.session_state.username = st.session_state.playlist_form.username
-        st.session_state.redirected_url = st.session_state.playlist_form.redirected_url
-        st.session_state.playlist_name = st.session_state.playlist_form.playlist_name
-        st.session_state.create = True
+        if 'playlist_form' in st.session_state:
+            if st.session_state.my_form:
+                st.session_state.username = st.session_state.playlist_form.username
+                st.session_state.redirected_url = st.session_state.playlist_form.redirected_url
+                st.session_state.playlist_name = st.session_state.playlist_form.playlist_name
+                st.session_state.create = True
         logger.info("after submit" + str(st.session_state.username))
 
     if st.session_state.create == False:
@@ -269,8 +271,8 @@ def display_recommendations(spotify_df, positive_prompt):
             redirected_url = st.text_input("Enter the redirected URL after login:")
             playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
             logger.info("before submit" + str(st.session_state.create))
-            create_button = st.form_submit_button(label='Create Playlist', on_click = before_submit())
-            if create_button:
+            submit_button = st.form_submit_button(label='Create Playlist', on_click = before_submit())
+            if submit_button :
                 before_submit()
     
     else:
