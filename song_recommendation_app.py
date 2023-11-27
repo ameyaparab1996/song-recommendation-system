@@ -161,8 +161,10 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         
     if st.session_state.checkbox == False and st.session_state.create == False:
         my_bar.empty()
+        display_recommendations(st.session_state.spotify_df, positive_prompt)
 
-    display_recommendations(st.session_state.spotify_df, positive_prompt)
+    if st.session_state.create:
+        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
 
 
 def display_recommendations(spotify_df, positive_prompt):
@@ -240,7 +242,6 @@ def display_recommendations(spotify_df, positive_prompt):
     
         
 def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
-    st.session_state.checkbox = True
     #token_info = sp_oauth.get_access_token(redirected_url)
     #if token_info:
         #sp = spotipy.Spotify(auth=token_info["access_token"])
@@ -251,6 +252,8 @@ def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_nam
     sp.playlist_add_items(playlist_id, track_uri)
     st.write("Created")
     st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
+    st.session_state.checkbox = False
+    st.session_state.create = False
     #else:
         #st.error("Failed to authenticate. Please try again.")
 
