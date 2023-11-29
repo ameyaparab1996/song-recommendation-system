@@ -135,7 +135,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     st.markdown("# Spotify Song Recommendations")
     st.markdown("###### Here are the songs that best match your prompt:")
 
-    if st.session_state.checkbox == False and st.session_state.create == False:
+    if (st.session_state.checkbox == False and st.session_state.create == False) or st.session_state.prompt_update:
         progress_text = "Fetching Songs 🎶. Please wait ⌛."
         my_bar = st.progress(0, text=progress_text)
         
@@ -188,6 +188,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                 
         st.session_state.spotify_df = spotify_df
         my_bar.empty()
+        st.session_state.prompt_update = False
     
     display_recommendations(st.session_state.spotify_df, positive_prompt)
 
@@ -229,7 +230,7 @@ def display_recommendations(spotify_df, positive_prompt):
     preview_col.subheader("Preview       ", divider='green')
     playlist_col.subheader("Add to Playlist", divider='green')
 
-    if st.session_state.checkbox == False:
+    if st.session_state.checkbox == False or :
         st.session_state.include = [True] * (len(spotify_df))
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
 
@@ -249,7 +250,7 @@ def display_recommendations(spotify_df, positive_prompt):
         
     spotify_df['include'] = st.session_state.include
 
-    if st.session_state.create == False:
+    if st.session_state.create == False or st.session_state.prompt_update:
 
         for j in range(0, len(spotify_df)):
             album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
@@ -277,17 +278,23 @@ def display_recommendations(spotify_df, positive_prompt):
                 #spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
        
         st.dataframe(spotify_df[spotify_df['include'] == True])
+        st.session_state.prompt_update = False
     
     if st.session_state.create:
         logger.info("outside form" + str(st.session_state.create))
         spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
     
+def prompt_update():
+    st.session_state.prompt_update = True
 
 if "checkbox" not in st.session_state:
     st.session_state.checkbox = False
 
 if "create" not in st.session_state:
     st.session_state.create = False
+
+if "prompt_update" not in st.session_state:
+    st.session_state.prompt_update = False
 
 #if "positive_prompt" not in st.session_state:
  #   st.session_state.positive_prompt = ""
@@ -317,16 +324,14 @@ if 'sp_oauth' not in st.session_state:
     st.session_state.sp_oauth = ""
     
 st.sidebar.write("Write a prompt to generate recommendations")
-positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for.")
-negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be.")
-n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
+positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for.", on_change=prompt_update())
+negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be.", on_change=prompt_update())
+n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1, on_change=prompt_update())
 #st.session_state.positive_prompt = positive_prompt
 st.session_state.generate_button = False
 st.session_state.generate_button = st.sidebar.button("Generate Playlist", type="primary")
 
-if st.session_state.generate_button or st.session_state.checkbox or st.session_state.create:
-    logger.info(positive_prompt)
-    logger.info(n)
+if st.session_state.generate_button or st.session_state.prompt_update or st.session_state.checkbox or st.session_state.create:
     generate_recommendations(positive_prompt, negative_prompt, n)
 else:
     intro()
