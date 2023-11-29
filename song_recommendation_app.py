@@ -271,7 +271,7 @@ def display_recommendations(spotify_df, positive_prompt):
                 logger.info("inside form" + str(st.session_state.create))
                 #spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
        
-        st.dataframe(spotify_df.loc[spotify_df['include'] == True, 'track_uri'])
+        st.dataframe(spotify_df.loc[spotify_df['include'] == True])
     
     if st.session_state.create:
         logger.info("outside form" + str(st.session_state.create))
