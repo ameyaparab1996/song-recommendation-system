@@ -252,16 +252,15 @@ def display_recommendations(spotify_df, positive_prompt):
     if st.session_state.create == False:
 
         for j in range(0, len(spotify_df) + 1):
-                if j < len(spotify_df):
-                    album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
-                    track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
-                    artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
-                    preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
-                    logger.info("before checkbox" + str(st.session_state.create))
-                    st.session_state.include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change= update_include())
-                else:
-                    update_include()
-                    logger.info("Additional index")
+            album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
+            track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
+            artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
+            preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
+            logger.info("before checkbox" + str(st.session_state.create))
+            st.session_state.include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
+            if st.session_state.include[j] != spotify_df.iloc[j, 7]
+                update_include()
+                logger.info(f"Updated index", j)
 
         
         with st.form(key='playlist_form'):
