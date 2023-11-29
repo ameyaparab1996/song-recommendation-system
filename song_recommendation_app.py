@@ -229,11 +229,10 @@ def display_recommendations(spotify_df, positive_prompt):
     preview_col.subheader("Preview       ", divider='green')
     playlist_col.subheader("Add to Playlist", divider='green')
 
-    spotify_df['include'] = st.session_state.include
     if st.session_state.checkbox == False:
-        #st.session_state.include = [True] * (len(spotify_df))
+        st.session_state.include = [True] * (len(spotify_df))
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
-        
+
     def update_include():
         #spotify_df['include'] = st.session_state.include
         st.session_state.checkbox = True
@@ -248,8 +247,7 @@ def display_recommendations(spotify_df, positive_prompt):
             st.session_state.create = True
             logger.info("after submit" + str(st.session_state.create))
         
-    #if st.session_state.create == False:
-    
+    spotify_df['include'] = st.session_state.include
 
     if st.session_state.create == False:
 
@@ -293,7 +291,7 @@ if "spotify_df" not in st.session_state:
     st.session_state.spotify_df = ""
 
 if "include" not in st.session_state:
-    st.session_state.include = [True] * (len(spotify_df))
+    st.session_state.include = []
 
 if "username" not in st.session_state:
     st.session_state.username = ""
