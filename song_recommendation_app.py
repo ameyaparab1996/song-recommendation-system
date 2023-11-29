@@ -188,7 +188,6 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                 
         st.session_state.spotify_df = spotify_df
         my_bar.empty()
-        st.session_state.prompt_update = False
     
     display_recommendations(st.session_state.spotify_df, positive_prompt)
 
