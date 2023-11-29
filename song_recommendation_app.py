@@ -258,7 +258,7 @@ def display_recommendations(spotify_df, positive_prompt):
             preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
             logger.info("before checkbox" + str(st.session_state.create))
             st.session_state.include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed")
-            if st.session_state.include[j] != spotify_df.iloc[j, 7]
+            if st.session_state.include[j] != spotify_df.iloc[j, 7]:
                 update_include()
                 logger.info(f"Updated index", j)
 
