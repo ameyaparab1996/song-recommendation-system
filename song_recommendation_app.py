@@ -251,7 +251,7 @@ def display_recommendations(spotify_df, positive_prompt):
 
     if st.session_state.create == False:
 
-        for j in range(0, len(spotify_df) + 1):
+        for j in range(0, len(spotify_df)):
             album_image_col.image(spotify_df.iloc[j, 4], caption=spotify_df.iloc[j, 2])
             track_name_col.markdown('<p>' + spotify_df.iloc[j, 1] + '</p>', unsafe_allow_html=True)
             artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
