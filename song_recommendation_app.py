@@ -261,7 +261,7 @@ def display_recommendations(spotify_df, positive_prompt):
                     st.session_state.include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change= update_include())
                 else:
                     update_include()
-                    logger.info("Additional index"))
+                    logger.info("Additional index")
 
         
         with st.form(key='playlist_form'):
