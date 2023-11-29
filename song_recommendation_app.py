@@ -274,13 +274,13 @@ def display_recommendations(spotify_df, positive_prompt):
             if st.session_state.submit_button:
                 st.session_state.create = True
                 logger.info("inside form" + str(st.session_state.create))
-                #spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
+                #spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
        
         st.dataframe(spotify_df[spotify_df['include'] == True])
     
     if st.session_state.create:
         logger.info("outside form" + str(st.session_state.create))
-        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, st.session_state.positive_prompt)
+        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
     
 
 if "checkbox" not in st.session_state:
@@ -289,8 +289,8 @@ if "checkbox" not in st.session_state:
 if "create" not in st.session_state:
     st.session_state.create = False
 
-if "positive_prompt" not in st.session_state:
-    st.session_state.positive_prompt = ""
+#if "positive_prompt" not in st.session_state:
+ #   st.session_state.positive_prompt = ""
 
 if "spotify_df" not in st.session_state:
     st.session_state.spotify_df = ""
@@ -303,6 +303,9 @@ if "username" not in st.session_state:
 
 if "playlist_name" not in st.session_state:
     st.session_state.playlist_name = ""
+
+if "generate_button" not in st.session_state:
+    st.session_state.generate_button = False
 
 if "submit_button" not in st.session_state:
     st.session_state.submit_button = False
@@ -317,9 +320,11 @@ st.sidebar.write("Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for.")
 negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be.")
 n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1)
-st.session_state.positive_prompt = positive_prompt
+#st.session_state.positive_prompt = positive_prompt
+st.session_state.generate_button = False
+st.session_state.generate_button = st.sidebar.button("Generate Playlist", type="primary")
 
-if st.sidebar.button("Generate Playlist", type="primary") or st.session_state.checkbox or st.session_state.create:
+if st.session_state.generate_button or st.session_state.checkbox or st.session_state.create:
     generate_recommendations(positive_prompt, negative_prompt, n)
 else:
     intro()
