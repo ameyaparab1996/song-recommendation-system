@@ -244,8 +244,9 @@ def display_recommendations(spotify_df, positive_prompt):
         st.markdown(f"[Login with Spotify]({auth_url})")
 
     def before_submit():
-        st.session_state.create = True
-        logger.info("after submit" + str(st.session_state.create))
+        if st.session_state.submit_button:
+            st.session_state.create = True
+            logger.info("after submit" + str(st.session_state.create))
         
     #if st.session_state.create == False:
     
