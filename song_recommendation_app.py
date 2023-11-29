@@ -229,13 +229,13 @@ def display_recommendations(spotify_df, positive_prompt):
     preview_col.subheader("Preview       ", divider='green')
     playlist_col.subheader("Add to Playlist", divider='green')
 
+    spotify_df['include'] = st.session_state.include
     if st.session_state.checkbox == False:
-        include = [True] * (len(spotify_df))
-        spotify_df['include'] = [True] * (len(spotify_df))
+        #st.session_state.include = [True] * (len(spotify_df))
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
         
-    def update_include(include):
-        spotify_df['include'] = include
+    def update_include():
+        #spotify_df['include'] = st.session_state.include
         st.session_state.checkbox = True
 
     def spotify_login():    
@@ -259,7 +259,7 @@ def display_recommendations(spotify_df, positive_prompt):
                 artists_col.markdown('<p>' + ', '.join(spotify_df.iloc[j, 3]) + '</p>', unsafe_allow_html=True)
                 preview_col.audio(spotify_df.iloc[j, 5], format="audio/mp3")
                 logger.info("before checkbox" + str(st.session_state.create))
-                include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change= update_include(include))
+                st.session_state.include[j] = playlist_col.checkbox("",key=j, value=spotify_df.iloc[j, 7], label_visibility="collapsed", on_change= update_include())
 
         with st.form(key='playlist_form'):
             st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
@@ -291,6 +291,9 @@ if "positive_prompt" not in st.session_state:
 
 if "spotify_df" not in st.session_state:
     st.session_state.spotify_df = ""
+
+if "include" not in st.session_state:
+    st.session_state.include = [True] * (len(spotify_df))
 
 if "username" not in st.session_state:
     st.session_state.username = ""
