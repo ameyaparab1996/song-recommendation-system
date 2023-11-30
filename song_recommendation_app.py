@@ -1,3 +1,4 @@
+# Setup code
 import streamlit as st
 import pandas as pd
 import nltk
@@ -24,10 +25,10 @@ st.set_page_config(
     page_icon="🎵",
 )
 
+# Function to display the Home Page
 def intro():
 
     st.write("# Personalized Spotify Song Recommender")
-    
     st.divider()
     st.markdown(
         """
@@ -39,75 +40,64 @@ def intro():
     """
     )
 
-import streamlit as st
-import pandas as pd
-import nltk
-import re
-import spotipy
-import gensim
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from nltk.tokenize import word_tokenize
-from spotipy.oauth2 import SpotifyOAuth
-from spotipy.oauth2 import SpotifyClientCredentials
 
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('wordnet')
-
+# Function to authenticate to spotify developer account
 def authenticate_spotify(auth_scope):
     
     cid = '551b554ed7e14fafa21c5118bbba81fe'
     secret = 'baad9d3c05244d5fbfda7d5b9e8ebecb'
-    
-    client_credentials_manager = SpotifyClientCredentials(client_id=cid, 
-                                                          client_secret=secret)
 
     if auth_scope == 'playlist-modify-public':
+        # Authentication method to create and update playlist
         auth_manager= SpotifyOAuth(client_id=cid,
                                    client_secret=secret,
                                    redirect_uri='https://song-recommendation-system.streamlit.app/',
                                    scope=auth_scope,
                                    open_browser=True)
-        #return spotipy.Spotify(auth_manager = auth_manager)
         return auth_manager
+        
     else:
+        # Authentication method to get songs from Spotify
+        client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
         return spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 
-def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
-        logger.info("inside spotify redirect")
-        logger.info(username + playlist_name)
+
+# Function to Create Playlist
+def create_playlist(sp_oauth, redirected_url, track_uri, username, playlist_name, playlist_description):
+    
         parsed_url = urlparse(redirected_url)
         query_params = parse_qs(parsed_url.query)
         code = query_params.get('code', [None])[0]
-
-        logger.info(code)
         token_info = sp_oauth.get_access_token(code)
+    
         if token_info:
-            logger.info("got token")
             sp = spotipy.Spotify(auth=token_info["access_token"])
             logger.info("Successfully authenticated with Spotify!")
-        #sp = spotipy.Spotify(auth_manager = sp_oauth)
             playlist_info = sp.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_description)
             playlist_id = playlist_info['id']
             sp.playlist_add_items(playlist_id, track_uri)
-            logger.info("This message will be logged.")
-            #st.write("Created")
-            logger.info(st.session_state.keys)
+            logger.info("Playlist Created")
+
+            # Clear all session variables
             for key in st.session_state.keys():
                 del st.session_state[key]
-            logger.info("keys after")
-            logger.info(st.session_state.keys)
+
+            # Display message on UI
             st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
-            st.balloons()
-            time.sleep(5)
+            time.sleep(4)
             st.rerun()
-        else:
-            st.error("Failed to authenticate. Please try again.")
             
+        else:
+            # Display Error Message
+            st.error("Failed to authenticate. Please try again.")
+
+
+# Function to create a dataframe of recommendations from the Genius dataset
 def get_recommendations(songs_df, similar_doc):
     
   recommendation = pd.DataFrame(columns = ['id','title','tag','artist','score'])
   count = 0
+    
   for doc_tag, score in similar_doc:
     recommendation.at[count, 'id'] = songs_df.loc[int(doc_tag)].id
     recommendation.at[count, 'title'] = songs_df.loc[int(doc_tag)].title
@@ -116,35 +106,44 @@ def get_recommendations(songs_df, similar_doc):
     recommendation.at[count, 'lyrics'] = songs_df.loc[int(doc_tag)].lyrics
     recommendation.at[count, 'score'] = score
     count += 1
+      
   return recommendation
-    
+
+
+# Function to process text document
 def normalize_document(doc):
+    
     stop_words = nltk.corpus.stopwords.words('english')
     
-    # remove all strings inside [ ]
+    # Remove all strings inside [ ]
     doc = re.sub(r'\[.*?\]', '', doc)
-    # lower case and remove special characters\whitespaces
+    
+    # Lower case and remove special characters\whitespaces
     doc = re.sub(r'[^a-zA-Z0-9\s]', '', doc, re.I|re.A)
     doc = doc.lower()
     doc = doc.strip()
     doc = doc.replace("nbsp","")
-    # tokenize document
+    
+    # Tokenize document
     tokens = nltk.word_tokenize(doc)
 
-     # filter stopwords out of document
+     # Filter stopwords out of document
     filtered_tokens = [token for token in tokens if token not in stop_words]
 
     return filtered_tokens
-    
+
+# Function to generate recommendations from the prompts
 def generate_recommendations(positive_prompt, negative_prompt, n):
     
     st.markdown("# Spotify Song Recommendations")
     st.markdown("###### Here are the songs that best match your prompt:")
 
     if (st.session_state.checkbox == False and st.session_state.create == False) or st.session_state.prompt_update:
+        
         progress_text = "Fetching Songs 🎶. Please wait ⌛."
         my_bar = st.progress(0, text=progress_text)
-        
+
+        # Use model to find similar songs
         model = Doc2Vec.load("data/d2v_test.model")
         positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
         negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
@@ -152,14 +151,16 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         
         sampled_df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
         recommendations_df = get_recommendations(sampled_df, similar_doc)
-        
         sp = authenticate_spotify('fetch_songs')
-        
         spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url', 'track_uri'])
-        
+
+        # Search the recommended songs in Spotify and create a dataframe of songs
         for i in range(0,len(recommendations_df)):
+            
             track_name = recommendations_df.iloc[i, 1]
             artist_name = recommendations_df.iloc[i, 3]
+
+            # Search using exact track and artist name
             results = sp.search(q=f'track:{track_name} artist:{artist_name}', type='track', limit=1)
             if len(results['tracks']['items']) > 0:
                 track = results['tracks']['items'][0]
@@ -171,8 +172,11 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                                 'preview_url': track['preview_url'],
                                 'track_uri': track['uri']}
                 spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
+
+            # Search using track name and then match artists from Genius data
             elif len(results['tracks']['items']) == 0:
                 results_new = sp.search(q=f'track:{track_name}', type='track', limit=1)
+                
                 if len(results_new['tracks']['items']) > 0 and re.sub(r'[^a-zA-Z0-9\s]', '', results_new['tracks']['items'][0]['name'].lower()) == re.sub(r'[^a-zA-Z0-9\s]', '', recommendations_df.iloc[i,1].lower()):
                     track = results_new['tracks']['items'][0]
                     spotify_data = {'track_id': track['id'],
@@ -183,12 +187,18 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                                     'preview_url': track['preview_url'],
                                     'track_uri': track['uri']}
                     spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
+                    
                 else:
                     print(f"No track found with the name '{track_name}'")
+                    
             else:
                 print(f"No track found with the name '{track_name}'")
+
+            # Update progress bar %
             if st.session_state.checkbox == False:
                 my_bar.progress(int(len(spotify_df)*100/n), text=progress_text)
+
+            # Break when required number of songs are fetched
             if(len(spotify_df) == n):
                 break
                 
@@ -198,7 +208,9 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     display_recommendations(st.session_state.spotify_df, positive_prompt)
 
 
+# Function to display the recommended songs
 def display_recommendations(spotify_df, positive_prompt):
+    
     css = '''
     <style>
         .stMarkdown p, [data-testid="stCheckbox"] {
@@ -226,8 +238,9 @@ def display_recommendations(spotify_df, positive_prompt):
         }
     </style>
     '''
-    
     st.write(css, unsafe_allow_html=True)
+
+    # Display table headers
     album_image_col, track_name_col, artists_col, preview_col, playlist_col = st.columns([1,1,1,3,1])
     album_image_col.subheader("Album Cover", divider='green')
     track_name_col.subheader("Track       ", divider='green')
@@ -236,17 +249,13 @@ def display_recommendations(spotify_df, positive_prompt):
     playlist_col.subheader("Add to Playlist", divider='green')
 
     if st.session_state.checkbox == False or st.session_state.prompt_update:
+        # Include all songs by default
         st.session_state.include = [True] * (len(spotify_df))
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
 
     def update_include():
-        #spotify_df['include'] = st.session_state.include
+        # Update flag when checkbox value is changed
         st.session_state.checkbox = True
-
-    def spotify_login():    
-        st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
-        auth_url = st.session_state.sp_oauth.get_authorize_url()
-        st.markdown(f"[Login with Spotify]({auth_url})")
 
     def before_submit():
         if st.session_state.submit_button:
@@ -273,25 +282,30 @@ def display_recommendations(spotify_df, positive_prompt):
             st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
             auth_url = st.session_state.sp_oauth.get_authorize_url()
             st.markdown(f"[Login with Spotify]({auth_url})")
-            st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:")
-            st.session_state.playlist_name = st.text_input('Playlist Name', help="Give a name to your playlist which will appear in your library")
-            logger.info("before submit" + st.session_state.playlist_name)
-            st.session_state.submit_button = st.form_submit_button(label='Create Playlist', on_click=before_submit())
+            st.session_state.redirected_url = st.text_input("Enter the redirected URL after login:", help="URL where you will be redirected after clicking above link")
+            st.session_state.playlist_name = st.text_input('Playlist Name', help="Give a suitable name to your playlist which will appear in your library")
+            logger.info("Before form submission")
+            st.session_state.submit_button = st.form_submit_button(label='Create Playlist')
+
+            # Update flag when button is clicked
             if st.session_state.submit_button:
                 st.session_state.create = True
                 logger.info("inside form" + str(st.session_state.create))
-                #spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
        
-        st.dataframe(spotify_df[spotify_df['include'] == True])
+        #st.dataframe(spotify_df[spotify_df['include'] == True])
+        # Update flag once all the results are displayed again after changing prompt
         st.session_state.prompt_update = False
-    
+
+    # Call the function to create playlist when the flag of the button is True
     if st.session_state.create:
         logger.info("outside form" + str(st.session_state.create))
-        spotify_redirect( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
-    
+        create_playlist( st.session_state.sp_oauth,  st.session_state.redirected_url, list(spotify_df.loc[spotify_df['include'] == True, 'track_uri']), st.session_state.username, st.session_state.playlist_name, positive_prompt)
+
+# Function to update flag when the prompts are changed
 def prompt_update():
     st.session_state.prompt_update = True
 
+# Initialize session state
 if "checkbox" not in st.session_state:
     st.session_state.checkbox = False
 
@@ -300,9 +314,6 @@ if "create" not in st.session_state:
 
 if "prompt_update" not in st.session_state:
     st.session_state.prompt_update = False
-
-#if "positive_prompt" not in st.session_state:
- #   st.session_state.positive_prompt = ""
 
 if "spotify_df" not in st.session_state:
     st.session_state.spotify_df = ""
@@ -327,15 +338,17 @@ if 'redirected_url' not in st.session_state:
 
 if 'sp_oauth' not in st.session_state:
     st.session_state.sp_oauth = ""
-    
+
+# Sidebar content    
 st.sidebar.subheader("Write a prompt to generate recommendations")
-positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for.", on_change=prompt_update())
-negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be.", on_change=prompt_update())
+positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for", on_change=prompt_update())
+negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be", on_change=prompt_update())
 n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1, on_change=prompt_update())
-#st.session_state.positive_prompt = positive_prompt
+
 st.session_state.generate_button = False
 st.session_state.generate_button = st.sidebar.button("Generate Playlist", type="primary")
 
+# Condition to display appropriate page based on the flags
 if (st.session_state.generate_button and st.session_state.prompt_update) or st.session_state.checkbox or st.session_state.create:
     generate_recommendations(positive_prompt, negative_prompt, n)
 else:
