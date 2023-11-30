@@ -242,7 +242,7 @@ def display_recommendations(spotify_df, positive_prompt):
 
     # Display table headers
     album_image_col, track_name_col, artists_col, preview_col, playlist_col = st.columns([1,1,1,3,1])
-    album_image_col.subheader("Album Cover", divider='green')
+    album_image_col.subheader("Album       ", divider='green')
     track_name_col.subheader("Track       ", divider='green')
     artists_col.subheader("Artists       ", divider='green')
     preview_col.subheader("Preview       ", divider='green')
