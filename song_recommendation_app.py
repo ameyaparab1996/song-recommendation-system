@@ -214,7 +214,7 @@ def display_recommendations(spotify_df, positive_prompt):
     css = '''
     <style>
         .stMarkdown p, [data-testid="stCheckbox"] {
-            height: 140px !important;
+            height: 135px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -224,7 +224,7 @@ def display_recommendations(spotify_df, positive_prompt):
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            height: 140px !important;
+            height: 130px !important;
             padding-bottom: 30px !important;
         }
 
@@ -256,11 +256,6 @@ def display_recommendations(spotify_df, positive_prompt):
     def update_include():
         # Update flag when checkbox value is changed
         st.session_state.checkbox = True
-
-    def before_submit():
-        if st.session_state.submit_button:
-            st.session_state.create = True
-            logger.info("after submit" + str(st.session_state.create))
         
     spotify_df['include'] = st.session_state.include
 
