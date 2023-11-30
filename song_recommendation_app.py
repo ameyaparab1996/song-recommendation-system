@@ -136,7 +136,7 @@ def normalize_document(doc):
 def generate_recommendations(positive_prompt, negative_prompt, n):
     
     st.markdown("# Spotify Song Recommendations")
-    st.markdown("###### Here are the songs that best match your prompt:")
+    st.markdown("###### Here are the songs that best match your prompt")
 
     if (st.session_state.checkbox == False and st.session_state.create == False) or st.session_state.prompt_update:
         
