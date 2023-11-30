@@ -335,7 +335,7 @@ if 'sp_oauth' not in st.session_state:
     st.session_state.sp_oauth = ""
 
 # Sidebar content    
-st.sidebar.subheader("Write a prompt to generate recommendations")
+st.sidebar.write("#### Write a prompt to generate recommendations")
 positive_prompt = st.sidebar.text_area('How do you want your songs to be?', 'Songs about long lost love that capture the complex emotions associated with the theme of love lost, nostalgia, and reflection', help="Positive prompt describing elements or mood of the songs you looking for", on_change=prompt_update())
 negative_prompt = st.sidebar.text_area('What should the songs be not like?', 'Breakup because of distance', help="Negative prompt describing how you don't want the songs to be", on_change=prompt_update())
 n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_value=50, value ="min", step=1, on_change=prompt_update())
