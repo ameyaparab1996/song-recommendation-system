@@ -214,7 +214,7 @@ def display_recommendations(spotify_df, positive_prompt):
     css = '''
     <style>
         .stMarkdown p, [data-testid="stCheckbox"] {
-            height: 135px !important;
+            height: 125px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -224,7 +224,7 @@ def display_recommendations(spotify_df, positive_prompt):
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            height: 130px !important;
+            height: 120px !important;
             padding-bottom: 30px !important;
         }
 
