@@ -230,7 +230,6 @@ def display_recommendations(spotify_df, positive_prompt):
 
         h3 {
             text-align: center !important;
-            height: 100px !important;
         } 
         
         p {
