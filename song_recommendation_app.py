@@ -333,7 +333,7 @@ n = st.sidebar.number_input('Number of Songs to generate', min_value=5, max_valu
 st.session_state.generate_button = False
 st.session_state.generate_button = st.sidebar.button("Generate Playlist", type="primary")
 
-if st.session_state.generate_button or st.session_state.prompt_update or st.session_state.checkbox or st.session_state.create:
+if (st.session_state.generate_button and st.session_state.prompt_update) or st.session_state.checkbox or st.session_state.create:
     generate_recommendations(positive_prompt, negative_prompt, n)
 else:
     intro()
