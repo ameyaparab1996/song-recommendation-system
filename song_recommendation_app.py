@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import nltk
 import re
+import time
 import spotipy
 import logging     
 import gensim
@@ -97,8 +98,8 @@ def spotify_redirect(sp_oauth, redirected_url, track_uri, username, playlist_nam
             logger.info("keys after")
             logger.info(st.session_state.keys)
             st.toast("Your Playlist '" + playlist_name + "' was created successfully", icon='✅')
-            st.snow()
-            time.sleep(10)
+            st.balloons()
+            time.sleep(5)
             st.rerun()
         else:
             st.error("Failed to authenticate. Please try again.")
