@@ -229,7 +229,7 @@ def display_recommendations(spotify_df, positive_prompt):
     preview_col.subheader("Preview       ", divider='green')
     playlist_col.subheader("Add to Playlist", divider='green')
 
-    if st.session_state.checkbox == False or :
+    if st.session_state.checkbox == False or st.session_state.prompt_update:
         st.session_state.include = [True] * (len(spotify_df))
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
 
