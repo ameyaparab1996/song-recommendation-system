@@ -109,9 +109,9 @@ def get_recommendations(songs_df, similar_doc):
     count += 1
       
   return recommendation
+    
 
-
-# Function to process text document
+# Function to process text document (prompts)
 def normalize_document(doc):
     
     stop_words = nltk.corpus.stopwords.words('english')
@@ -132,6 +132,15 @@ def normalize_document(doc):
     filtered_tokens = [token for token in tokens if token not in stop_words]
 
     return filtered_tokens
+
+# Function to generate word cloud of lyrics
+def generate_wordcloud(text):
+    wordcloud = WordCloud(width=800, height=400, background_color='black').generate(text)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    st.pyplot()
+    
 
 # Function to generate recommendations from the prompts
 def generate_recommendations(positive_prompt, negative_prompt, n):
@@ -243,6 +252,12 @@ def display_recommendations(spotify_df, positive_prompt):
     '''
     st.write(css, unsafe_allow_html=True)
 
+    # Display wordcloud
+    if st.session_state.create == False or st.session_state.prompt_update:
+        processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
+        combined_lyrics = " ".join(processed_lyrics)
+        generate_wordcloud(combined_lyrics)
+    
     # Display table headers
     album_image_col, track_name_col, artists_col, preview_col, playlist_col = st.columns([1,1,1,3,1])
     album_image_col.subheader("Album", divider='green')
