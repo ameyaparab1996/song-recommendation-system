@@ -160,7 +160,7 @@ def normalize_document(doc, prompt = False):
 def generate_wordcloud(text):
     wordcloud = WordCloud(background_color=None, mode="RGBA", colormap='Greens', repeat=False).generate(text)
     fig = plt.figure()
-    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.imshow(wordcloud, interpolation='bilinear', aspect='auto')
     plt.axis('off')
     fig.savefig("data/wordcloud.png")
     #st.pyplot(fig, use_container_width=True)
