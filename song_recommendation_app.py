@@ -5,6 +5,7 @@ import nltk
 import re
 import time
 import gzip
+import gdown
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import spotipy
@@ -43,6 +44,23 @@ def intro():
     """
     )
 
+
+# Function to dowload files stored in drive
+def download_data():
+    
+data = '1-FS40zGGXThB9msiXEUE5UCkTe8MN39F'
+url = f'https://drive.google.com/uc?id={data}'
+output = 'filtered_songs.csv.gz'
+gdown.download(url, output, quiet=False)
+
+# Decompress the gzip file
+with gzip.open(output, 'rt') as f:
+    # Read the CSV file into a Pandas DataFrame
+    df = pd.read_csv(f)
+    
+ logger.info("Data downloaded")
+
+return df
 
 # Function to authenticate to spotify developer account
 def authenticate_spotify(auth_scope):
@@ -140,11 +158,11 @@ def normalize_document(doc, prompt = False):
 
 # Function to generate word cloud of lyrics
 def generate_wordcloud(text):
-    wordcloud = WordCloud(width=800, height=400, background_color='black').generate(text)
-    plt.figure(figsize=(10, 5))
+    wordcloud = WordCloud(background_color='black', colormap='Greens', repeat=False).generate(text)
+    fig = plt.figure()
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
-    st.pyplot()
+    st.pyplot(fig)
     
 
 # Function to generate recommendations from the prompts
@@ -165,8 +183,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
         
         df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
-        #with gzip.open('filtered_songs.gz', 'rt') as file:
-            #df = pd.read_csv(file)
+        test_df = download_data()
             
         recommendations_df = get_recommendations(df, similar_doc)
         sp = authenticate_spotify('fetch_songs')
