@@ -162,14 +162,14 @@ def normalize_document(doc, prompt = False):
 def generate_wordcloud(text):
     wordcloud = WordCloud(background_color="black", mode="RGBA", colormap='Greens', repeat=False).generate(text)
     fig = plt.figure()
-    plt.imshow(wordcloud, interpolation='bilinear', aspect='auto')
+    plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
     image_path = "data/wordcloud.png"
     fig.savefig(image_path)
     image = Image.open(image_path)
     image_rgba = image.convert("RGBA")
     image_array = np.array(image_rgba)
-    image_array[:, :, 3] = 128
+    image_array[:, :, 3] = 10
     return image_array
     #st.pyplot(fig, use_container_width=True)
     #return fig
