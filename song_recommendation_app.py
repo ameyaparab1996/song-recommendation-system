@@ -161,7 +161,7 @@ def normalize_document(doc, prompt = False):
 # Function to generate word cloud of lyrics
 def generate_wordcloud(text):
     wordcloud = WordCloud(background_color="black", mode="RGBA", colormap='Greens', repeat=False).generate(text)
-    fig = plt.figure()
+    fig = plt.figure(figsize=(20,40))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
     image_path = "data/wordcloud.png"
