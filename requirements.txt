@@ -5,3 +5,4 @@ spotipy
 gensim
 gdown
 wordcloud
+Pillow
