@@ -96,7 +96,7 @@ def create_playlist(sp_oauth, redirected_url, track_uri, username, playlist_name
 # Function to create a dataframe of recommendations from the Genius dataset
 def get_recommendations(songs_df, similar_doc):
     
-  recommendation = pd.DataFrame(columns = ['id','title','tag','artist','score'])
+  recommendation = pd.DataFrame(columns = ['id','title','tag','artist','lyrics','score'])
   count = 0
     
   for doc_tag, score in similar_doc:
