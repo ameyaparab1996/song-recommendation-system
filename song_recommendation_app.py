@@ -184,7 +184,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                                 'album_image': track['album']['images'][0]['url'],
                                 'preview_url': track['preview_url'],
                                 'track_uri': track['uri'],
-                                'lyrics': recommendations_df.iloc[i, 7]}
+                                'lyrics': recommendations_df.iloc[i, 4]}
                 spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
 
             # Search using track name and then match artists from Genius data
@@ -200,7 +200,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                                     'album_image': track['album']['images'][0]['url'],
                                     'preview_url': track['preview_url'],
                                     'track_uri': track['uri'],
-                                    'lyrics': recommendations_df.iloc[i, 7]}
+                                    'lyrics': recommendations_df.iloc[i, 4]}
                     spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
                     
                 else:
