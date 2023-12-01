@@ -48,19 +48,19 @@ def intro():
 # Function to dowload files stored in drive
 def download_data():
     
-data = '1-FS40zGGXThB9msiXEUE5UCkTe8MN39F'
-url = f'https://drive.google.com/uc?id={data}'
-output = 'filtered_songs.csv.gz'
-gdown.download(url, output, quiet=False)
-
-# Decompress the gzip file
-with gzip.open(output, 'rt') as f:
-    # Read the CSV file into a Pandas DataFrame
-    df = pd.read_csv(f)
+    data = '1-FS40zGGXThB9msiXEUE5UCkTe8MN39F'
+    url = f'https://drive.google.com/uc?id={data}'
+    output = 'filtered_songs.csv.gz'
+    gdown.download(url, output, quiet=False)
     
- logger.info("Data downloaded")
-
-return df
+    # Decompress the gzip file
+    with gzip.open(output, 'rt') as f:
+        # Read the CSV file into a Pandas DataFrame
+        df = pd.read_csv(f)
+        
+     logger.info("Data downloaded")
+    
+    return df
 
 # Function to authenticate to spotify developer account
 def authenticate_spotify(auth_scope):
