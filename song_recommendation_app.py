@@ -5,6 +5,8 @@ import nltk
 import re
 import time
 import gzip
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 import spotipy
 import logging     
 import gensim
