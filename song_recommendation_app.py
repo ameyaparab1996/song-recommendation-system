@@ -275,12 +275,6 @@ def display_recommendations(spotify_df, positive_prompt):
     </style>
     '''
     st.write(css, unsafe_allow_html=True)
-
-    # Display wordcloud
-    if st.session_state.create == False or st.session_state.prompt_update:
-        processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
-        combined_lyrics = " ".join(processed_lyrics)
-        generate_wordcloud(combined_lyrics)
     
     # Display table headers
     album_image_col, track_name_col, artists_col, preview_col, playlist_col = st.columns([1,1,1,3,1])
@@ -309,8 +303,6 @@ def display_recommendations(spotify_df, positive_prompt):
                 #update_include()
                 spotify_df.iloc[j, 7] = st.session_state.include[j]
 
-        processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
-        combined_lyrics = " ".join(processed_lyrics)
         generate_wordcloud(combined_lyrics)
         
         with st.form(key='playlist_form'):
