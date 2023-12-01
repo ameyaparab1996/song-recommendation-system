@@ -257,7 +257,7 @@ def display_recommendations(spotify_df, positive_prompt):
     # Display wordcloud
     if st.session_state.create == False or st.session_state.prompt_update:
         processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
-        combined_lyrics = " ".join(processed_lyrics)
+        combined_lyrics = " ".join(" ".join(processed_lyrics))
         generate_wordcloud(combined_lyrics)
     
     # Display table headers
