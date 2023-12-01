@@ -183,7 +183,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
         
         df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
-        test_df = download_data()
+        #test_df = download_data()
             
         recommendations_df = get_recommendations(df, similar_doc)
         sp = authenticate_spotify('fetch_songs')
