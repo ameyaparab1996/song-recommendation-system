@@ -314,7 +314,7 @@ def display_recommendations(spotify_df, positive_prompt):
                 spotify_df.iloc[j, 7] = st.session_state.include[j]
 
         # Display wordcloud
-        with st.container():
+        with st.columns(1):
             generate_wordcloud(combined_lyrics)
         
         with st.form(key='playlist_form'):
