@@ -165,7 +165,7 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
             
         recommendations_df = get_recommendations(df, similar_doc)
         sp = authenticate_spotify('fetch_songs')
-        spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url', 'track_uri'])
+        spotify_df = pd.DataFrame(columns=['track_id', 'track_name', 'album_name', 'artists', 'album_image', 'preview_url', 'track_uri', 'lyrics'])
 
         # Search the recommended songs in Spotify and create a dataframe of songs
         for i in range(0,len(recommendations_df)):
@@ -183,7 +183,8 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                                 'artists': [artist['name'] for artist in track['artists'] if 'name' in artist],
                                 'album_image': track['album']['images'][0]['url'],
                                 'preview_url': track['preview_url'],
-                                'track_uri': track['uri']}
+                                'track_uri': track['uri'],
+                                'lyrics': recommendations_df.iloc[i, 7]}
                 spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
 
             # Search using track name and then match artists from Genius data
@@ -198,7 +199,8 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
                                     'artists': [artist['name'] for artist in track['artists'] if 'name' in artist],
                                     'album_image': track['album']['images'][0]['url'],
                                     'preview_url': track['preview_url'],
-                                    'track_uri': track['uri']}
+                                    'track_uri': track['uri'],
+                                    'lyrics': recommendations_df.iloc[i, 7]}
                     spotify_df = pd.concat([spotify_df,pd.DataFrame([spotify_data])])
                     
                 else:
