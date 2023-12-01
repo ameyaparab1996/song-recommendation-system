@@ -317,7 +317,7 @@ def display_recommendations(spotify_df, positive_prompt):
 
         # Display wordcloud
         with st.container():
-            st.image(generate_wordcloud(combined_lyrics), use_container_width=True, output_format="png", channels="RGBA", format="PNG", clear_figure=True)
+            st.image(generate_wordcloud(combined_lyrics), use_column_width=True, output_format="png", channels="RGBA", clear_figure=True)
         
         with st.form(key='playlist_form'):
             st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
