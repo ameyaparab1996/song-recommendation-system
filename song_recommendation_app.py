@@ -165,7 +165,7 @@ def generate_wordcloud(text):
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
     image_path = "data/wordcloud.png"
-    fig.savefig(image_path)
+    fig.savefig(image_path, transparentbool=True, pad_inches= 0)
     image = Image.open(image_path)
     image_rgba = image.convert("RGBA")
     image_array = np.array(image_rgba)
