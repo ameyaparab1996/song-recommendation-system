@@ -158,7 +158,7 @@ def normalize_document(doc, prompt = False):
 
 # Function to generate word cloud of lyrics
 def generate_wordcloud(text):
-    wordcloud = WordCloud(background_color='black', colormap='Greens', repeat=False).generate(text)
+    wordcloud = WordCloud(background_color='none', mode="RGBA", colormap='Greens', repeat=False).generate(text)
     fig = plt.figure()
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
@@ -317,7 +317,7 @@ def display_recommendations(spotify_df, positive_prompt):
 
         # Display wordcloud
         with st.container():
-            st.pyplot(generate_wordcloud(combined_lyrics), use_container_width=True)
+            st.image(generate_wordcloud(combined_lyrics), use_container_width=True, output_format="png", channels="RGBA", format="PNG", clear_figure=True)
         
         with st.form(key='playlist_form'):
             st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
