@@ -164,7 +164,7 @@ def generate_wordcloud(text):
     plt.axis('off')
     fig.savefig("data/wordcloud.png")
     #st.pyplot(fig, use_container_width=True)
-    return fig
+    #return fig
     
 
 # Function to generate recommendations from the prompts
@@ -317,7 +317,8 @@ def display_recommendations(spotify_df, positive_prompt):
 
         # Display wordcloud
         with st.container():
-            st.image(generate_wordcloud(combined_lyrics), use_column_width=True, output_format="png", channels="RGBA")
+            generate_wordcloud(combined_lyrics)
+            st.image("data/wordcloud.png", use_column_width=True, output_format="png", channels="RGBA")
         
         with st.form(key='playlist_form'):
             st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
