@@ -284,6 +284,11 @@ def display_recommendations(spotify_df, positive_prompt):
     preview_col.subheader("Preview", divider='green')
     playlist_col.subheader("Add", divider='green')
 
+    # Display wordcloud
+    if st.session_state.create == False or st.session_state.prompt_update:
+        processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
+        combined_lyrics = " ".join(processed_lyrics)
+
     def update_include():
         # Update flag when checkbox value is changed
         st.session_state.checkbox = True
@@ -304,8 +309,6 @@ def display_recommendations(spotify_df, positive_prompt):
                 spotify_df.iloc[j, 7] = st.session_state.include[j]
 
         # Display wordcloud
-        processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
-        combined_lyrics = " ".join(processed_lyrics)
         generate_wordcloud(combined_lyrics)
         
         with st.form(key='playlist_form'):
