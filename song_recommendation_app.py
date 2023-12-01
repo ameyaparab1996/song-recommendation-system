@@ -58,7 +58,7 @@ def download_data():
         # Read the CSV file into a Pandas DataFrame
         df = pd.read_csv(f)
         
-     logger.info("Data downloaded")
+    logger.info("Data downloaded")
     
     return df
 
