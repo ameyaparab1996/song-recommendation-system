@@ -145,14 +145,14 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
         my_bar = st.progress(0, text=progress_text)
 
         # Use model to find similar songs
-        model = Doc2Vec.load("model/d2v.model")
+        model = Doc2Vec.load("data/d2v_test.model")
         positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
         negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
         similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
         
-        #sampled_df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
-        with gzip.open('filtered_songs.gz', 'rt') as file:
-            df = pd.read_csv(file)
+        df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
+        #with gzip.open('filtered_songs.gz', 'rt') as file:
+            #df = pd.read_csv(file)
             
         recommendations_df = get_recommendations(df, similar_doc)
         sp = authenticate_spotify('fetch_songs')
