@@ -162,7 +162,7 @@ def generate_wordcloud(text):
     fig = plt.figure()
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
-    st.pyplot(fig)
+    st.pyplot(fig, use_container_width=True)
     
 
 # Function to generate recommendations from the prompts
