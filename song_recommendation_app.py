@@ -16,6 +16,7 @@ from nltk.tokenize import word_tokenize
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.oauth2 import SpotifyClientCredentials
 from urllib.parse import urlparse, parse_qs
+from PIL import Image
 
 nltk.download('stopwords')
 nltk.download('punkt')
