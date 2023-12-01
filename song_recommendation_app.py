@@ -112,7 +112,7 @@ def get_recommendations(songs_df, similar_doc):
     
 
 # Function to process text document (prompts)
-def normalize_document(doc):
+def normalize_document(doc, prompt = False):
     
     stop_words = nltk.corpus.stopwords.words('english')
     
@@ -131,7 +131,10 @@ def normalize_document(doc):
      # Filter stopwords out of document
     filtered_tokens = [token for token in tokens if token not in stop_words]
 
-    return filtered_tokens
+    if prompt:
+        return filtered_tokens
+    else:
+        return ' '.join(filtered_tokens)
 
 # Function to generate word cloud of lyrics
 def generate_wordcloud(text):
@@ -155,8 +158,8 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
         # Use model to find similar songs
         model = Doc2Vec.load("data/d2v_test.model")
-        positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt), alpha=0.025)
-        negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt), alpha=0.025)
+        positive_vector = model.infer_vector(doc_words=normalize_document(positive_prompt, True), alpha=0.025)
+        negative_vector = model.infer_vector(doc_words=normalize_document(negative_prompt, True), alpha=0.025)
         similar_doc = model.docvecs.most_similar(positive=[positive_vector], negative=[negative_vector], topn = n*10)
         
         df = pd.read_csv("data/sampled_songs.csv", index_col ="Unnamed: 0")
@@ -257,7 +260,7 @@ def display_recommendations(spotify_df, positive_prompt):
     # Display wordcloud
     if st.session_state.create == False or st.session_state.prompt_update:
         processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
-        combined_lyrics = " ".join(" ".join(processed_lyrics))
+        combined_lyrics = " ".join(processed_lyrics)
         generate_wordcloud(combined_lyrics)
     
     # Display table headers
