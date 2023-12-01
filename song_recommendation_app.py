@@ -314,8 +314,7 @@ def display_recommendations(spotify_df, positive_prompt):
                 spotify_df.iloc[j, 7] = st.session_state.include[j]
 
         # Display wordcloud
-        with st.columns(1):
-            generate_wordcloud(combined_lyrics)
+        generate_wordcloud(combined_lyrics)
         
         with st.form(key='playlist_form'):
             st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
