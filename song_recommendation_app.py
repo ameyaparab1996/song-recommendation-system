@@ -258,24 +258,28 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     
     display_recommendations(st.session_state.spotify_df, positive_prompt)
 
-def get_base64_of_bin_file(bin_file):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
-def set_png_as_page_bg(png_file):
-    bin_str = get_base64_of_bin_file(png_file)
-    page_bg_img = '''
-    <style>
-    body {
-    background-image: url("data:image/png;base64,%s");
-    background-size: cover;
-    }
-    </style>
-    ''' % bin_str
-    
-    st.markdown(page_bg_img, unsafe_allow_html=True)
-    return
+def set_bg_hack(main_bg):
+    '''
+    A function to unpack an image from root folder and set as bg.
+ 
+    Returns
+    -------
+    The background.
+    '''
+    # set bg name
+    main_bg_ext = "png"
+        
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
+             background-size: cover
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
 
 # Function to display the recommended songs
 def display_recommendations(spotify_df, positive_prompt):
@@ -285,7 +289,7 @@ def display_recommendations(spotify_df, positive_prompt):
         processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
         combined_lyrics = " ".join(processed_lyrics)
         image = generate_wordcloud(combined_lyrics)
-        set_png_as_page_bg(generate_wordcloud(combined_lyrics))
+        set_bg_hack(generate_wordcloud(combined_lyrics))
         
     css = f'''
     <style>
