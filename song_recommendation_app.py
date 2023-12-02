@@ -263,36 +263,38 @@ def display_recommendations(spotify_df, positive_prompt):
         processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
         combined_lyrics = " ".join(processed_lyrics)
         image = generate_wordcloud(combined_lyrics)
+        with open(image, 'rb') as image_file:
+            encoded_string = base64.b64encode(image_file.read())
     
-    css = '''
+    css = f'''
     <style>
         .stApp {{
-            background-image: url("data/wordcloud.png")
+            background-image: url(data:image/{'jpeg'}; base64, {encoded_string})
             background-size: cover; !important
         }}
         
-        .stMarkdown p, [data-testid="stCheckbox"], [data-testid="stStyledFullScreenFrame"] {
+        .stMarkdown p, [data-testid="stCheckbox"], [data-testid="stStyledFullScreenFrame"] {{
             height: 140px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-        }
+        }}
 
-        .stAudio {
+        .stAudio {{
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             height: 140px !important;
             padding-bottom: 50px !important;
-        }
+        }}
 
-        h3 {
+        h3 {{
             text-align: center !important;
-        } 
+        }}
         
-        p {
+        p {{
             text-align: center !important;
-        }
+        }}
     </style>
     '''
     st.write(css, unsafe_allow_html=True)
