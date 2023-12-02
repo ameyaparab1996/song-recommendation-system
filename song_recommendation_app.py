@@ -257,9 +257,20 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
 
 # Function to display the recommended songs
 def display_recommendations(spotify_df, positive_prompt):
+
+    # Display wordcloud
+    if st.session_state.create == False or st.session_state.prompt_update:
+        processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
+        combined_lyrics = " ".join(processed_lyrics)
+        image = generate_wordcloud(combined_lyrics)
     
     css = '''
     <style>
+        .stApp {{
+            background-image: url("data/wordcloud.png")
+            background-size: cover; !important
+        }}
+        
         .stMarkdown p, [data-testid="stCheckbox"], [data-testid="stStyledFullScreenFrame"] {
             height: 140px !important;
             display: flex !important;
@@ -294,11 +305,6 @@ def display_recommendations(spotify_df, positive_prompt):
     preview_col.subheader("Preview", divider='green')
     playlist_col.subheader("Add", divider='green')
 
-    # Display wordcloud
-    if st.session_state.create == False or st.session_state.prompt_update:
-        processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
-        combined_lyrics = " ".join(processed_lyrics)
-
     if st.session_state.checkbox == False or st.session_state.prompt_update:
         # Include all songs by default
         st.session_state.include = [True] * (len(spotify_df))
@@ -324,9 +330,7 @@ def display_recommendations(spotify_df, positive_prompt):
                 spotify_df.iloc[j, 7] = st.session_state.include[j]
 
         # Display wordcloud
-        with st.container():
-            
-            st.image(generate_wordcloud(combined_lyrics), use_column_width=True, output_format="png", channels="RGBA")
+       #st.image(generate_wordcloud(combined_lyrics), use_column_width=True, output_format="png", channels="RGBA")
         
         with st.form(key='playlist_form'):
             st.session_state.username = st.text_input('Spotify Username' ,help="To find your username go to Settings and privacy > Account")
