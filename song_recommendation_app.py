@@ -5,6 +5,7 @@ import numpy as np
 import nltk
 import re
 import time
+import base64
 import gzip
 import gdown
 from wordcloud import WordCloud
