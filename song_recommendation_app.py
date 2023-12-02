@@ -272,7 +272,7 @@ def display_recommendations(spotify_df, positive_prompt):
     
     css = f'''
     <style>
-        [data-testid="stApp"] {{
+        [data-testid="stVerticalBlock"] {{
             background-image: url(data:image/{'jpeg'}; base64, {encoded_string})
             background-size: cover; !important
         }}
