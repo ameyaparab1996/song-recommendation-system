@@ -170,7 +170,9 @@ def generate_wordcloud(text):
     image_rgba = image.convert("RGBA")
     image_array = np.array(image_rgba)
     image_array[:, :, 3] = 50
-    return image_array
+    image_rgba = Image.fromarray(image_array, 'RGBA')
+    image_rgb = image_rgba.convert('RGB')
+    return image_rgb
     #st.pyplot(fig, use_container_width=True)
     #return fig
     
