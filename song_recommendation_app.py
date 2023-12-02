@@ -171,13 +171,29 @@ def generate_wordcloud(text):
     image = Image.open(image_path)
     image_rgba = image.convert("RGBA")
     image_array = np.array(image_rgba)
-    image_array[:, :, 3] = 10
+    image_array[:, :, 3] = 30
     image_rgba = Image.fromarray(image_array, 'RGBA')
     #image_rgb = image_rgba.convert('RGB')
     image_rgba.save("data/wordcloud1.png")
     return image_path1
-    #st.pyplot(fig, use_container_width=True)
-    #return fig
+    
+
+
+def set_background(main_bg):
+
+    main_bg_ext = "png"
+        
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
+             background-size: auto
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
     
 
 # Function to generate recommendations from the prompts
@@ -259,28 +275,6 @@ def generate_recommendations(positive_prompt, negative_prompt, n):
     
     display_recommendations(st.session_state.spotify_df, positive_prompt)
 
-def set_bg_hack(main_bg):
-    '''
-    A function to unpack an image from root folder and set as bg.
- 
-    Returns
-    -------
-    The background.
-    '''
-    # set bg name
-    main_bg_ext = "png"
-        
-    st.markdown(
-         f"""
-         <style>
-         .stApp {{
-             background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
-             background-size: cover
-         }}
-         </style>
-         """,
-         unsafe_allow_html=True
-     )
 
 # Function to display the recommended songs
 def display_recommendations(spotify_df, positive_prompt):
@@ -290,7 +284,7 @@ def display_recommendations(spotify_df, positive_prompt):
         processed_lyrics = spotify_df['lyrics'].apply(normalize_document)
         combined_lyrics = " ".join(processed_lyrics)
         image = generate_wordcloud(combined_lyrics)
-        set_bg_hack(generate_wordcloud(combined_lyrics))
+        set_background(generate_wordcloud(combined_lyrics))
         
     css = f'''
     <style>
