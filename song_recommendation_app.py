@@ -172,7 +172,8 @@ def generate_wordcloud(text):
     image_array[:, :, 3] = 50
     image_rgba = Image.fromarray(image_array, 'RGBA')
     image_rgb = image_rgba.convert('RGB')
-    return image_rgb
+    image_rgb.save("data/wordcloud.png")
+    return image_path
     #st.pyplot(fig, use_container_width=True)
     #return fig
     
