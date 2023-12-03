@@ -323,7 +323,7 @@ def display_recommendations(spotify_df, positive_prompt):
     preview_col.subheader("Preview", divider='green')
     playlist_col.subheader("Add", divider='green')
 
-    if st.session_state.checkbox == False or st.session_state.prompt_update:
+    if st.session_state.checkbox == False or !(False in st.session_state.include.contains):
         # Include all songs by default
         logger.info("checkbox" + str(st.session_state.checkbox))
         logger.info("prompt" + str(st.session_state.prompt_update))
