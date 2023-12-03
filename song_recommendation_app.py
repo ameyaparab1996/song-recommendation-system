@@ -325,11 +325,15 @@ def display_recommendations(spotify_df, positive_prompt):
 
     if st.session_state.checkbox == False or st.session_state.prompt_update:
         # Include all songs by default
+        logger.info("checkbox" + str(st.session_state.checkbox))
+        logger.info("prompt" + str(st.session_state.prompt_update))
         st.session_state.include = [True] * (len(spotify_df))
         st.session_state.sp_oauth = authenticate_spotify('playlist-modify-public')
         
     def update_include():
         # Update flag when checkbox value is changed
+        logger.info("checkbox" + str(st.session_state.checkbox))
+        logger.info("prompt" + str(st.session_state.prompt_update))
         st.session_state.checkbox = True
         
     spotify_df['include'] = st.session_state.include
