@@ -368,7 +368,7 @@ def display_recommendations(spotify_df, positive_prompt):
                 st.session_state.create = True
                 logger.info("inside form" + str(st.session_state.create))
        
-        st.dataframe(spotify_df[spotify_df['include'] == True])
+        #st.dataframe(spotify_df[spotify_df['include'] == True])
         # Update flag once all the results are displayed again after changing prompt
         st.session_state.prompt_update = False
 
