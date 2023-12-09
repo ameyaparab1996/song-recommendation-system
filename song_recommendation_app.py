@@ -28,14 +28,15 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 st.set_page_config(
-    page_title="Song Recommender",
+    page_title="SoundScout",
     page_icon="🎵",
 )
 
 # Function to display the Home Page
 def intro():
 
-    st.write("# Personalized Spotify Song Recommender")
+    st.write("# SoundScout")
+    st.write("## Personalized Spotify Song Recommender")
     st.divider()
     st.markdown(
         """
